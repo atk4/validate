@@ -39,6 +39,4 @@ plugins:
   radon:
     enabled: true
 exclude_patterns:
-- docs/**/*
-- tests/**/*
-- vendor/**/*
+- "!src/**/*"
