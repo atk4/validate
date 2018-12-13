@@ -1,0 +1,32 @@
+{
+    "name": "atk4/validate",
+    "type": "library",
+    "description": "Agile Data - Validator add-on",
+    "keywords": ["framework", "orm", "query", "active record", "sql", "builder", "nosql", "mongodb", "mysql", "postgresql", "validator", "validate"],
+    "homepage": "https://github.com/atk4/validate",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Romans Malinovskis",
+            "email": "romans@agiletoolkit.org",
+            "homepage": "https://nearly.guru/"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "require": {
+        "php": ">=5.6.0",
+        "atk4/data": "dev-develop",
+        "vlucas/valitron": "^1.4"
+    },
+    "require-dev": {
+    },
+    "autoload": {
+        "psr-4": {"atk4\\validate\\":"src/"}
+    },
+    "autoload-dev": {
+        "psr-4": {
+          "atk4\\validate\\tests\\":"tests/"
+        }
+    }
+}
