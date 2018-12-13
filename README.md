@@ -13,7 +13,7 @@ $model->add(new \atk4\validate\Controller());
 // add model fields
 
 // name is required and at least 3 characters long
-$model->addField('name', 'validate'=>['required',['lengthMin', 3]]);
+$model->addField('name', ['validate'=>['required','lengthMin'=>3]]);
 
 
 $model->addField('type', [

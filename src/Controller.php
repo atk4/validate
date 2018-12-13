@@ -14,25 +14,26 @@ namespace atk4\validate;
 class Controller
 {
     // @todo probably some of these traits are not actually needed
-    use \atk4\core\ContainerTrait;
-    use \atk4\core\HookTrait;
+    //use \atk4\core\ContainerTrait;
+    use \atk4\core\TrackableTrait;
+    //use \atk4\core\HookTrait;
     //use \atk4\core\DynamicMethodTrait;
-    //use \atk4\core\InitializerTrait {
-    //    init as _init;
-    //}
+    use \atk4\core\InitializerTrait {
+        init as _init;
+    }
     //use \atk4\core\NameTrait;
-    use \atk4\core\DIContainerTrait;
-    use \atk4\core\FactoryTrait;
-    use \atk4\core\AppScopeTrait;
+    //use \atk4\core\DIContainerTrait;
+    //use \atk4\core\FactoryTrait;
+    //use \atk4\core\AppScopeTrait;
 
     /**
      * Initialization.
      */
     public function init()
     {
-        parent::init();
+        $this->_init();
 
-        $this->owner->_default_seed_addField = [new ModelField()];
+        $this->owner->_default_seed_addField = ['\\atk4\\validate\\ModelField'];
 
         $this->owner->addHook('validate', $this);
     }
