@@ -8,62 +8,161 @@ use atk4\validate\Controller;
 class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
 {
     public $m;
+    public $c;
 
     public function setUp()
     {
         $a = [];
         $p = new \atk4\data\Persistence_Array($a);
-        $this->m = new \atk4\data\Model($p);
+        $this->m = $m = new \atk4\data\Model($p);
 
-        // add controller to your model BEFORE adding fields
-        $this->m->add(new \atk4\validate\Controller());
+        $m->addField('name');
+        $m->addField('age', ['type' => 'number']);
+        $m->addField('type', ['required' => true, 'enum' => ['dog', 'ball']]);
+        $m->addField('tail_length', ['type' => 'number']);
 
-        // add model fields
-
-        // name is required and at least 3 characters long
-        $this->m->addField('name', [
-            'validate' => ['required', 'lengthMin'=>3],
-        ]);
-
-        $this->m->addField('type', [
-            'required' => true,
-            'enum'     => ['dog', 'ball'],
-        ]);
-
-        $this->m->addField('tail_length', [
-            'type'        => 'number',
-            'validate_if' => ['type' => 'dog'], // only dogs have tail
-            'validate'    => ['required', 'integer'], // if type=dog, then this field is required, otherwise it's not
-        ]);
+        $this->c = new \atk4\validate\Validator($m);
     }
 
     /**
-     * @expectedException        \atk4\data\ValidationException
+     * Name to short.
      */
-    public function testEx1()
+    public function testSimple1()
     {
-        // name to short
-        $this->m->save(['name'=>'a']);
+        $this->c->rule('name', ['required','lengthMin'=>3]);
+
+        $err = $this->m->unload()->set(['name'=>'a'])->validate();
+        $this->assertEquals(['name'], array_keys($err));
     }
 
     /**
-     * @expectedException        \atk4\data\ValidationException
+     * Name required.
      */
-    public function testEx2()
+    public function testSimple2()
     {
-        // for dogs tail length is required field
-        $this->m->save(['name'=>'Rex', 'type'=>'dog']);
+        $this->c->rule('name', ['required','lengthMin'=>3]);
+
+        $err = $this->m->unload()->set(['name'=>'a'])->validate();
+        $this->assertEquals(['name'], array_keys($err));
     }
 
-    public function testOk1()
+    /**
+     * Multiple errors.
+     */
+    public function testMultiple1()
     {
-        // ball have no tail, so it's fine
-        $this->m->save(['name'=>'Jumpy', 'type'=>'ball']);
+        $this->c->rules([
+            'name' => 'required',
+            'age' => ['integer', 'min'=>0, 'max'=>99],
+            'tail_length' => ['integer', 'min'=>0],
+        ]);
+
+        $err = $this->m->unload()->set([
+            'name' => null,
+            'age' => 10,
+            'tail_length' => 5.45,
+        ])->validate();
+
+        $this->assertEquals(['name', 'tail_length'], array_keys($err));
     }
 
-    public function testOk2()
+    /**
+     * Callback instead of rules.
+     */
+    public function testCallback1()
     {
-        // ball have no tail, so it's fine
-        $this->m->save(['name'=>'Rex', 'type'=>'dog', 'tail_length'=>10]);
+        // Age should be odd (nepāra skaitlis)
+        $this->c->rule('age', function($field, $value, $validator){
+            if ($value % 2 == 0) {
+                $validator->error($field, 'Age should be odd', []);
+            }
+        });
+
+        $err = $this->m->unload()->set([
+            'age' => 10, // odd number, so should throw error
+        ])->validate();
+
+        $this->assertEquals(['age'], array_keys($err));
+    }
+
+    /**
+     * Conditional rules.
+     */
+    public function testIf()
+    {
+        $this->c->if(['type'=>'dog'], [
+            // dogs require age and tail_length
+            'age' => ['required'],
+            'tail_length' => ['required'],
+        ], [
+            // balls should not have tail
+            'tail_length' => ['equals'=>''],
+        ]);
+
+        // ball don't require tail_length and age
+        $err = $this->m->unload()->set([
+            'type' => 'ball',
+        ])->validate();
+        $this->assertEquals([], array_keys($err));
+
+        // ball should not have tail_length
+        $err = $this->m->unload()->set([
+            'type' => 'ball',
+            'tail_length' => 5,
+        ])->validate();
+        $this->assertEquals(['tail_length'], array_keys($err));
+
+        // dogs require age and tail_length
+        $err = $this->m->unload()->set([
+            'type' => 'dog',
+            'tail_length' => 5, // age is not set
+        ])->validate();
+        $this->assertEquals(['age'], array_keys($err));
+    }
+
+    /**
+     * Mix rules.
+     */
+    public function testMix()
+    {
+        $this->c->rule('age', ['min'=>3]); // everything should have age at least 3
+        $this->c->if(['type'=>'dog'], [
+            // dogs require age
+            'age' => ['required', 'max'=>20], // max age of dog = 20
+        ]);
+
+        $err = $this->m->unload()->set([
+            'type' => 'ball',
+        ])->validate();
+        $this->assertEquals([], array_keys($err)); // age can be blank for balls
+
+        $err = $this->m->unload()->set([
+            'type' => 'ball',
+            'age' => 2,
+        ])->validate();
+        $this->assertEquals(['age'], array_keys($err)); // age must be at least 3 for everything if set
+
+        $err = $this->m->unload()->set([
+            'type' => 'dog',
+        ])->validate();
+        $this->assertEquals(['age'], array_keys($err)); // for dogs age is required
+
+        $err = $this->m->unload()->set([
+            'type' => 'dog',
+            'age' => 10,
+        ])->validate();
+        $this->assertEquals([], array_keys($err)); // for dogs age 10 is ok
+
+        $err = $this->m->unload()->set([
+            'type' => 'dog',
+            'age' => 2,
+        ])->validate();
+        $this->assertEquals(['age'], array_keys($err)); // for dogs also age should be at least 3
+
+        $err = $this->m->unload()->set([
+            'type' => 'dog',
+            'age' => 30,
+        ])->validate();
+        $this->assertEquals(['age'], array_keys($err)); // for dogs age should be no more than 20
     }
 }
