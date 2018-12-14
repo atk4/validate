@@ -19,26 +19,42 @@ It uses https://github.com/vlucas/valitron under the hood.
 # Usage
 
 ``` php
-// add controller to your model BEFORE adding fields
-$model->add(new \atk4\validate\Controller());
-
 // add model fields
+$model->addField('name');
+$model->addField('age', ['type' => 'number']);
+$model->addField('type', ['required' => true, 'enum' => ['dog', 'ball']]);
+$model->addField('tail_length', ['type' => 'number']);
 
-// name is required and at least 3 characters long
-$model->addField('name', ['validate'=>['required','lengthMin'=>3]]);
+// add validator to your model
+// also will register itself as $model->validator property
+$v = new \atk4\validate\Validator($model);
 
+// set simple validation rule for one field
+// ->rule($field, $rules)
+$v->rule('name', ['required','lengthMin'=>3]);
 
-$model->addField('type', [
-    'required' => true,
-    'enum'     => ['dog', 'ball'],
+// set multiple validation rules in one shot
+// ->rules($array_of_rules) // [field=>rules]
+$v->rules([
+    'name' => ['required', 'lengthMin'=>3],
+    'age' => ['integer', 'min'=>0, 'max'=>99],
+    'tail_length' => ['integer', 'min'=>0],
 ]);
 
-$model->addField('tail_length', [
-    'type'        => 'number',
-    'validate_if' => ['type' => 'dog'], // only dogs have tail
-    'validate'    => ['required','integer'], // if type=dog, then this field is required, otherwise it's not
+// set validation rules based on value of another field
+// if type=dog, then sets fields age and tail_length as required
+// ->if($condition, $then_array_of_rules, $else_array_of_rules)
+$v->if(['type'=>'dog'], [
+    'age' => ['required'],
+    'tail_length' => ['required'],
+], [
+    'tail_length' => ['equals'=>''], // balls don't have tail
 ]);
+
+// you can also pass multiple conditions which will be treated as AND conditions
+$v->if(['type'=>'dog', 'age'=>50], $rules_if_true, $rules_if_false);
 ```
 
-See `/tests` folder for more examples.
+You can also pass callback instead of array of rules.
 
+See `/tests` folder for more examples.
