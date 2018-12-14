@@ -2,9 +2,6 @@
 
 namespace atk4\validate\tests;
 
-use atk4\data\Model;
-use atk4\validate\Controller;
-
 class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
 {
     public $m;
@@ -29,7 +26,7 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
      */
     public function testSimple1()
     {
-        $this->c->rule('name', ['required','lengthMin'=>3]);
+        $this->c->rule('name', ['required', 'lengthMin'=>3]);
 
         $err = $this->m->unload()->set(['name'=>'a'])->validate();
         $this->assertEquals(['name'], array_keys($err));
@@ -40,7 +37,7 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
      */
     public function testSimple2()
     {
-        $this->c->rule('name', ['required','lengthMin'=>3]);
+        $this->c->rule('name', ['required', 'lengthMin'=>3]);
 
         $err = $this->m->unload()->set(['name'=>'a'])->validate();
         $this->assertEquals(['name'], array_keys($err));
@@ -52,14 +49,14 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
     public function testMultiple1()
     {
         $this->c->rules([
-            'name' => 'required',
-            'age' => ['integer', 'min'=>0, 'max'=>99],
+            'name'        => 'required',
+            'age'         => ['integer', 'min'=>0, 'max'=>99],
             'tail_length' => ['integer', 'min'=>0],
         ]);
 
         $err = $this->m->unload()->set([
-            'name' => null,
-            'age' => 10,
+            'name'        => null,
+            'age'         => 10,
             'tail_length' => 5.45,
         ])->validate();
 
@@ -72,7 +69,7 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
     public function testCallback1()
     {
         // Age should be odd (nepāra skaitlis)
-        $this->c->rule('age', function($field, $value, $validator){
+        $this->c->rule('age', function ($field, $value, $validator) {
             if ($value % 2 == 0) {
                 $validator->error($field, 'Age should be odd', []);
             }
@@ -92,7 +89,7 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
     {
         $this->c->if(['type'=>'dog'], [
             // dogs require age and tail_length
-            'age' => ['required'],
+            'age'         => ['required'],
             'tail_length' => ['required'],
         ], [
             // balls should not have tail
@@ -107,14 +104,14 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
 
         // ball should not have tail_length
         $err = $this->m->unload()->set([
-            'type' => 'ball',
+            'type'        => 'ball',
             'tail_length' => 5,
         ])->validate();
         $this->assertEquals(['tail_length'], array_keys($err));
 
         // dogs require age and tail_length
         $err = $this->m->unload()->set([
-            'type' => 'dog',
+            'type'        => 'dog',
             'tail_length' => 5, // age is not set
         ])->validate();
         $this->assertEquals(['age'], array_keys($err));
@@ -138,7 +135,7 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
 
         $err = $this->m->unload()->set([
             'type' => 'ball',
-            'age' => 2,
+            'age'  => 2,
         ])->validate();
         $this->assertEquals(['age'], array_keys($err)); // age must be at least 3 for everything if set
 
@@ -149,19 +146,19 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
 
         $err = $this->m->unload()->set([
             'type' => 'dog',
-            'age' => 10,
+            'age'  => 10,
         ])->validate();
         $this->assertEquals([], array_keys($err)); // for dogs age 10 is ok
 
         $err = $this->m->unload()->set([
             'type' => 'dog',
-            'age' => 2,
+            'age'  => 2,
         ])->validate();
         $this->assertEquals(['age'], array_keys($err)); // for dogs also age should be at least 3
 
         $err = $this->m->unload()->set([
             'type' => 'dog',
-            'age' => 30,
+            'age'  => 30,
         ])->validate();
         $this->assertEquals(['age'], array_keys($err)); // for dogs age should be no more than 20
     }
