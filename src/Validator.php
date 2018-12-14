@@ -42,10 +42,10 @@ class Validator
      */
     public function rule($field, $rules)
     {
-        $rules = $this->_normalizeRules($rules);
-
-        // @todo Here we could use array_merge to allow to call rule() multiple times and append rules
-        $this->rules[$field] = $rules;
+        $this->rules[$field] = array_merge(
+            isset($this->rules[$field]) ? $this->rules[$field] : [],
+            $this->_normalizeRules($rules)
+        );
 
         return $this;
     }
@@ -123,6 +123,7 @@ class Validator
                 $test = $test && ($model[$field] == $value);
             }
 
+            // @todo not sure about recursive or not here. Recursive can be evil
             $all_rules = array_merge_recursive($all_rules, $test ? $then_hash : $else_hash);
         }
 
