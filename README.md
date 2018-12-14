@@ -7,7 +7,7 @@ It uses https://github.com/vlucas/valitron under the hood.
 
 [![Build Status](https://travis-ci.org/atk4/validate.png?branch=develop)](https://travis-ci.org/atk4/validate)
 [![Code Climate](https://codeclimate.com/github/atk4/validate/badges/gpa.svg)](https://codeclimate.com/github/atk4/validate)
-<StyleCI here>
+[![StyleCI](https://styleci.io/repos/161695320/shield)](https://styleci.io/repos/161695320)
 [![CodeCov](https://codecov.io/gh/atk4/validate/branch/develop/graph/badge.svg)](https://codecov.io/gh/atk4/validate)
 [![Test Coverage](https://codeclimate.com/github/atk4/validate/badges/coverage.svg)](https://codeclimate.com/github/atk4/validate/coverage)
 [![Issue Count](https://codeclimate.com/github/atk4/validate/badges/issue_count.svg)](https://codeclimate.com/github/atk4/validate)
