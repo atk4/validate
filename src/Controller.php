@@ -52,7 +52,7 @@ class Controller
         $v = new \Valitron\Validator($m->get());
 
         // validate all model fields
-        foreach($m->elements as $key=>$field) {
+        foreach ($m->elements as $key=>$field) {
             if ($field instanceof ModelField) {
                 $field->validate($v);
             }

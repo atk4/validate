@@ -4,7 +4,6 @@ namespace atk4\validate\tests;
 
 use atk4\data\Model;
 use atk4\validate\Controller;
-use atk4\validate\ModelField;
 
 class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
 {
@@ -23,7 +22,7 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
 
         // name is required and at least 3 characters long
         $this->m->addField('name', [
-            'validate' => ['required','lengthMin'=>3]
+            'validate' => ['required', 'lengthMin'=>3],
         ]);
 
         $this->m->addField('type', [
@@ -34,7 +33,7 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
         $this->m->addField('tail_length', [
             'type'        => 'number',
             'validate_if' => ['type' => 'dog'], // only dogs have tail
-            'validate'    => ['required','integer'], // if type=dog, then this field is required, otherwise it's not
+            'validate'    => ['required', 'integer'], // if type=dog, then this field is required, otherwise it's not
         ]);
     }
 
@@ -53,18 +52,18 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
     public function testEx2()
     {
         // for dogs tail length is required field
-        $this->m->save(['name'=>'Rex','type'=>'dog']);
+        $this->m->save(['name'=>'Rex', 'type'=>'dog']);
     }
 
     public function testOk1()
     {
         // ball have no tail, so it's fine
-        $this->m->save(['name'=>'Jumpy','type'=>'ball']);
+        $this->m->save(['name'=>'Jumpy', 'type'=>'ball']);
     }
 
     public function testOk2()
     {
         // ball have no tail, so it's fine
-        $this->m->save(['name'=>'Rex','type'=>'dog','tail_length'=>10]);
+        $this->m->save(['name'=>'Rex', 'type'=>'dog', 'tail_length'=>10]);
     }
 }

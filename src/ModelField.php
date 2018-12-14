@@ -10,7 +10,7 @@ namespace atk4\validate;
 class ModelField extends \atk4\data\Field_SQL
 {
     /**
-     * Describes arbitrary validation rules
+     * Describes arbitrary validation rules.
      *
      * @var array
      */
@@ -24,11 +24,12 @@ class ModelField extends \atk4\data\Field_SQL
     public $validate_if = [];
 
     /**
-     * Validate field value by using \Valitron\Validator
+     * Validate field value by using \Valitron\Validator.
      *
      * @param \Valitron\Validator $v
      */
-    public function validate($v) {
+    public function validate($v)
+    {
         $should_validate = true;
 
         // if validate_if property is set, then validate only if all fields will have specific values set
@@ -38,7 +39,7 @@ class ModelField extends \atk4\data\Field_SQL
 
         if ($this->validate && $should_validate) {
             if (is_array($this->validate)) {
-                foreach($this->validate as $rule=>$args) {
+                foreach ($this->validate as $rule=>$args) {
                     if (is_callable($args)) {
                         // callback
                         $args($v);
