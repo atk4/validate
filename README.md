@@ -53,6 +53,10 @@ $v->if(['type'=>'dog'], [
 
 // you can also pass multiple conditions which will be treated as AND conditions
 $v->if(['type'=>'dog', 'age'=>50], $rules_if_true, $rules_if_false);
+
+// you can also set custom error message like this:
+$v->rule('age', ['min'=>3, 'message'=>'Common! {field} should be bigger']);
+// and you will get this "Common! Age should be bigger"
 ```
 
 You can also pass callback instead of array of rules.
