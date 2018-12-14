@@ -128,16 +128,29 @@ class Validator
 
         // validate rules
         foreach ($all_rules as $field=>$rules) {
+
+            // use rule key 'message' to pass custom message
+            $message = null;
+            if (isset($rules['message'])) {
+                $message = $rules['message'];
+                unset($rules['message']);
+            }
+
+            // set up all rules
             foreach ($rules as $key=>$rule) {
+                $r = null;
                 if (is_callable($rule)) {
                     // parameters - field_name, value, \Valitron\Validator
                     call_user_func_array($rule, [$field, $model->get($field), $v]);
                 } elseif (is_int($key)) {
                     // just rule name, like 'required'
-                    $v->rule($rule, $field);
+                    $r = $v->rule($rule, $field);
                 } else {
                     // rule with argument like 'min'=>10
-                    $v->rule($key, $field, $rule);
+                    $r = $v->rule($key, $field, $rule);
+                }
+                if ($r && $message) {
+                    $r->message($message)/*->label('Name')*/;
                 }
             }
         }

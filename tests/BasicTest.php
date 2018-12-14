@@ -162,4 +162,17 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
         ])->validate();
         $this->assertEquals(['age'], array_keys($err)); // for dogs age should be no more than 20
     }
+
+    /**
+     * Test custom message.
+     */
+    public function testMessage()
+    {
+        $this->c->rule('age', ['min'=>3, 'message'=>'Common! {field} should be bigger']); // custom message
+
+        $err = $this->m->unload()->set([
+            'age'  => 2,
+        ])->validate();
+        $this->assertEquals(['age'=>'Common! Age should be bigger'], $err); // custom message here
+    }
 }
