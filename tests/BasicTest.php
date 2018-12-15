@@ -26,7 +26,7 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
      */
     public function testSimple1()
     {
-        $this->c->rule('name', ['required', 'lengthMin'=>3]);
+        $this->c->rule('name', ['required', ['lengthMin', 3]]);
 
         $err = $this->m->unload()->set(['name'=>'a'])->validate();
         $this->assertEquals(['name'], array_keys($err));
@@ -37,7 +37,7 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
      */
     public function testSimple2()
     {
-        $this->c->rule('name', ['required', 'lengthMin'=>3]);
+        $this->c->rule('name', ['required', ['lengthMin', 3]]);
 
         $err = $this->m->unload()->set(['name'=>'a'])->validate();
         $this->assertEquals(['name'], array_keys($err));
@@ -50,8 +50,8 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
     {
         $this->c->rules([
             'name'        => 'required',
-            'age'         => ['integer', 'min'=>0, 'max'=>99],
-            'tail_length' => ['integer', 'min'=>0],
+            'age'         => ['integer', ['min', 0], ['max', 99]],
+            'tail_length' => ['integer', ['min', 0]],
         ]);
 
         $err = $this->m->unload()->set([
@@ -69,17 +69,18 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
     public function testCallback1()
     {
         // Age should be odd (nepāra skaitlis)
-        $this->c->rule('age', function ($field, $value, $validator) {
-            if ($value % 2 == 0) {
-                $validator->error($field, 'Age should be odd', []);
-            }
-        });
+        $this->c->rule('age', [
+            [
+                function ($field, $value, $params, $data) {return $value % 2 != 0;},
+                'message' => 'Age should be odd'
+            ],
+        ]);
 
         $err = $this->m->unload()->set([
             'age' => 10, // odd number, so should throw error
         ])->validate();
 
-        $this->assertEquals(['age'], array_keys($err));
+        $this->assertEquals(['age'=>'Age should be odd'], $err); // error and custom message
     }
 
     /**
@@ -93,7 +94,7 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
             'tail_length' => ['required'],
         ], [
             // balls should not have tail
-            'tail_length' => ['equals'=>''],
+            'tail_length' => [ ['equals', ''] ],
         ]);
 
         // ball don't require tail_length and age
@@ -122,10 +123,10 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
      */
     public function testMix()
     {
-        $this->c->rule('age', ['min'=>3]); // everything should have age at least 3
+        $this->c->rule('age', [ ['min', 3] ]); // everything should have age at least 3
         $this->c->if(['type'=>'dog'], [
-            // dogs require age
-            'age' => ['required', 'max'=>20], // max age of dog = 20
+            // dogs require age and age of dog should be less than 20
+            'age' => ['required', ['max', 20]],
         ]);
 
         $err = $this->m->unload()->set([
@@ -168,11 +169,19 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
      */
     public function testMessage()
     {
-        $this->c->rule('age', ['min'=>3, 'message'=>'Common! {field} should be bigger']); // custom message
+        $this->c->rule('age', [
+            ['min', 3, 'message'=>'Common! {field} to small'],
+            ['max', 5, 'message'=>'And now to big'],
+        ]);
 
         $err = $this->m->unload()->set([
             'age'  => 2,
         ])->validate();
-        $this->assertEquals(['age'=>'Common! Age should be bigger'], $err); // custom message here
+        $this->assertEquals(['age'=>'Common! Age to small'], $err); // custom message here
+
+        $err = $this->m->unload()->set([
+            'age'  => 10,
+        ])->validate();
+        $this->assertEquals(['age'=>'And now to big'], $err); // custom message here
     }
 }

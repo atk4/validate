@@ -31,14 +31,14 @@ $v = new \atk4\validate\Validator($model);
 
 // set simple validation rule for one field
 // ->rule($field, $rules)
-$v->rule('name', ['required','lengthMin'=>3]);
+$v->rule('name', [ 'required', ['lengthMin', 3] ]);
 
 // set multiple validation rules in one shot
 // ->rules($array_of_rules) // [field=>rules]
 $v->rules([
-    'name' => ['required', 'lengthMin'=>3],
-    'age' => ['integer', 'min'=>0, 'max'=>99],
-    'tail_length' => ['integer', 'min'=>0],
+    'name' => ['required', ['lengthMin',3]],
+    'age' => ['integer', ['min',0], ['max',99]],
+    'tail_length' => ['integer', ['min',0]],
 ]);
 
 // set validation rules based on value of another field
@@ -48,17 +48,18 @@ $v->if(['type'=>'dog'], [
     'age' => ['required'],
     'tail_length' => ['required'],
 ], [
-    'tail_length' => ['equals'=>''], // balls don't have tail
+    'tail_length' => [ ['equals',''] ], // balls don't have tail
 ]);
 
 // you can also pass multiple conditions which will be treated as AND conditions
 $v->if(['type'=>'dog', 'age'=>50], $rules_if_true, $rules_if_false);
 
 // you can also set custom error message like this:
-$v->rule('age', ['min'=>3, 'message'=>'Common! {field} should be bigger']);
-// and you will get this "Common! Age should be bigger"
+$v->rule('age', [ ['min', 3, 'message'=>'Common! {field} to small'] ]);
+// and you will get this "Common! Age to small"
 ```
 
 You can also pass callback instead of array of rules.
+Callback receives these parameters $field, $value, $args, $data and should return true/false.
 
 See `/tests` folder for more examples.
