@@ -53,11 +53,11 @@ class Validator
     public function __construct(\atk4\data\Model $model)
     {
         $this->model = $model;
-        
+
         if (!isset($model->validator)) {
             $model->validator = $this;
         }
-        
+
         $model->addHook('validate', $this);
     }
 
