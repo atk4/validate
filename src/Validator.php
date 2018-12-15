@@ -27,7 +27,7 @@ class Validator
      *          ['email'],
      *          ['lengthBetween', 4, 10, 'message'=>'test 2'],
      *      ],
-     *  ];
+     *  ];.
      *
      * @var array
      */
@@ -37,7 +37,7 @@ class Validator
      * Array of conditional rules in following format:
      *  [
      *      [$conditions, $then_rules, $else_rules],
-     *  ]
+     *  ].
      *
      * $conditions - array of conditions
      * $then_rules - array in $this->rules format which will be used if conditions are met
@@ -155,7 +155,6 @@ class Validator
 
             $all_rules = array_merge_recursive($all_rules, $test ? $then_hash : $else_hash);
         }
-
 
         // set up Valitron rules
         $v->mapFieldsRules($all_rules);

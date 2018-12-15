@@ -71,8 +71,10 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
         // Age should be odd (nepāra skaitlis)
         $this->c->rule('age', [
             [
-                function ($field, $value, $params, $data) {return $value % 2 != 0;},
-                'message' => 'Age should be odd'
+                function ($field, $value, $params, $data) {
+                    return $value % 2 != 0;
+                },
+                'message' => 'Age should be odd',
             ],
         ]);
 
@@ -94,7 +96,7 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
             'tail_length' => ['required'],
         ], [
             // balls should not have tail
-            'tail_length' => [ ['equals', ''] ],
+            'tail_length' => [['equals', '']],
         ]);
 
         // ball don't require tail_length and age
@@ -123,7 +125,7 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
      */
     public function testMix()
     {
-        $this->c->rule('age', [ ['min', 3] ]); // everything should have age at least 3
+        $this->c->rule('age', [['min', 3]]); // everything should have age at least 3
         $this->c->if(['type'=>'dog'], [
             // dogs require age and age of dog should be less than 20
             'age' => ['required', ['max', 20]],
