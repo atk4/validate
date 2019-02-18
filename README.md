@@ -63,3 +63,98 @@ You can also pass callback instead of array of rules.
 Callback receives these parameters $field, $value, $args, $data and should return true/false.
 
 See `/tests` folder for more examples.
+
+# Custom rules
+
+Definition of custom rules : 
+
+Example class of rule : atk4_value_unique
+
+can be used like this :
+
+``` php
+
+$validator = new \atk4\validate\Validator($userModel);
+
+$validator->rule('email', [ ['atk4_value_unique', $userModel] ]);
+
+```
+
+it will check if the value in field email is unique in field email of model  
+
+below the simple code that make the validation :
+
+method `getCallback` 
+ - $field = is the field to validate
+ - $value = is the value of field to validate
+ - $params = is the array of parameters, in this case 1 ( $userModel )
+ - $fields = other fields of data to validate
+
+method `getMessages`
+ - return an array, where key is language code and value is the translated language ( en is mandatory)  
+
+``` php
+
+class ValueUnique extends aRule implements iRule
+{
+    
+    public static function getCallback($field, $value, array $params, array $fields): bool
+    {
+        $errors = [];
+    
+        if (count($params) != 1) {
+            $errors[] = 'need 1 param';
+        }
+    
+        if (isset($params[0]) && !($params[0] instanceof Model)) {
+            $errors[] = 'first param must be \atk4\data\Model';
+        }
+    
+        if (count($errors) > 0) {
+            throw new \Exception(static::getName() . ' ' . implode(', ', $errors) . ' (Model $model,string $field)');
+        }
+    
+        $model = $params[0]; // Model used for check
+    
+        $isLoaded = $model->loaded(); // if loaded ? INSERT : UPDATE
+        
+        $model = $model->newInstance();
+        $model->addCondition($field, '=', $value);
+        
+        $action = $model->action('count');
+        $count  = (int)$action->getOne();
+                
+        // if is loaded must be 1;
+        if ($isLoaded && $count == 1) {
+            return true;
+        }
+        
+        // if is not loaded must be 0;
+        if (!$isLoaded && $count == 0) {
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public static function getMessages(): array
+    {
+        return [
+            'en' => '{field} must be unique',
+            'it' => '{field} non è unico',
+            'ro' => '{field} nu este unic',
+        ];
+    }
+}
+
+```
+
+at now there are 4 Model Validation rule :
+ - `atk4_value_unique` ***validate uniqueness on the same model field, need 1 param : Model*** 			  
+ - `atk4_value_unique_other` ***validate uniqueness on another model field, need 2 params : Model, field*** 
+ - `atk4_value_in_list` ***validate if value exists in model field, need 2 params : Model, field***
+ - `atk4_value_not_in_list` ***validate if value not exists in model field, need 2 params : Model, field***
+ 
+ Attention : `atk4_value_unique` and `atk4_value_unique_other` check model for inserting or updating
+ 
+See `/tests` folder for more examples.
