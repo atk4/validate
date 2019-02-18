@@ -46,19 +46,102 @@ class Validator
      * @var array
      */
     public $if_rules = [];
-
+    
+    /**
+     * Track value of Valitron Language for rules message
+     *
+     * \Valitron\Validator rules are static and we need to add custom rules :
+     *  - when is called $this->validate
+     *  - when is called $this->validate and the Valitron language is changed
+     *
+     * There is no problem adding rules two times, because in
+     * static method : \Valitron\Validator::add() rules are replaced in static keyValue array :
+     *  - \Valitron\Validator::$_rules
+     *  - \Valitron\Validator::$_ruleMessages
+     *
+     * @var string $valitronLanguageLoaded
+     */
+    protected static $valitronLanguageLoaded = false;
+    
     /**
      * Initialization.
      */
     public function __construct(\atk4\data\Model $model)
     {
         $this->model = $model;
-
+    
         if (!isset($model->validator)) {
             $model->validator = $this;
         }
 
         $model->addHook('validate', $this);
+    }
+    
+    /**
+     * Check if \Valitron\Validator language is changed
+     *
+     * @return bool
+     */
+    protected static function _isChangedValitronLanguage()
+    {
+        return (static::$valitronLanguageLoaded == \Valitron\Validator::lang()) ? false : true;
+    }
+    
+    /**
+     * Search for php files in Rules folder
+     * Discard non rules files
+     * On legit Rule file call static ::setup() to add the rule
+     *
+     * @return void
+     */
+    protected static function _addCustomRuleDefinition()
+    {
+        /**
+         * we need to add rules only one time
+         * we need to reload rules if changed language
+         */
+        if (!static::_isChangedValitronLanguage()) {
+            return false;
+        }
+        
+        static::$valitronLanguageLoaded = \Valitron\Validator::lang();
+        
+        $path = __DIR__ . DIRECTORY_SEPARATOR . 'Rules' . DIRECTORY_SEPARATOR;
+        
+        foreach (
+            new \DirectoryIterator($path) as /* \SplFileInfo */
+            $fileInfo
+        ) {
+            
+            if ($fileInfo->isDot()) {
+                continue;
+            }
+            
+            if ($fileInfo->isDir()) {
+                throw new \Exception('directory rules must contains only files');
+            }
+            
+            if ($fileInfo->getExtension() !== 'php') {
+                throw new \Exception('directory rules must contains only php files');
+            }
+            
+            $fileName = $fileInfo->getFilename();
+    
+            if (in_array($fileName, [
+                'iRule.php',
+                'aRule.php',
+            ])) {
+                continue;
+            }
+            
+            $classNameNoNS = basename($fileName, '.php');
+            
+            $NSClassName = '\\' . __NAMESPACE__ . '\\Rules\\' . $classNameNoNS;
+            
+            $NSClassName::setup();
+        }
+        
+        return true;
     }
 
     /**
@@ -142,6 +225,9 @@ class Validator
      */
     public function validate(\atk4\data\Model $model, string $intent = null)
     {
+        /* entry point add custom rules */
+        $this->_addCustomRuleDefinition();
+        
         // initialize Validator, set data
         $v = new \Valitron\Validator($model->get());
 
