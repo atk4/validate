@@ -171,7 +171,7 @@ class Validator
     /**
      * Runs all validations.
      *
-     * @param Model $model
+     * @param Model  $model
      * @param string $intent
      *
      * @return array|null

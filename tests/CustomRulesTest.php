@@ -10,7 +10,6 @@ use atk4\validate\Validator;
 
 class CustomRulesTest extends PHPUnit_SchemaTestCase
 {
-
     public $m;
 
     public $c;
@@ -415,7 +414,6 @@ class TestModel extends Model
 
 class RuleTestID extends RuleAbstract
 {
-
     /**
      * defined only to check exceptions in test.
      */
