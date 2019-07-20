@@ -4,7 +4,6 @@
 
 namespace atk4\validate;
 
-use atk4\data\Exception;
 use atk4\data\Model;
 use atk4\validate\Rules\ValueInList;
 use atk4\validate\Rules\ValueNotInList;
@@ -183,7 +182,7 @@ class Validator
         // - if not loaded
         // - Valitron\Valitron Language is changed
         if ($this->valitron_language !== \Valitron\Validator::lang()) {
-            foreach($this->custom_rules as $custom_rule_class) {
+            foreach ($this->custom_rules as $custom_rule_class) {
                 $custom_rule_class::setup();
             }
 

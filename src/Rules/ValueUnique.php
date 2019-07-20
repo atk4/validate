@@ -16,7 +16,7 @@ use atk4\data\Model;
  */
 class ValueUnique extends RuleAbstract
 {
-    public static $rule_id = "atk4_value_unique";
+    public static $rule_id = 'atk4_value_unique';
     public static $rule_messages = [
         'en' => '{field} is not unique',
         'it' => '{field} non è unico',

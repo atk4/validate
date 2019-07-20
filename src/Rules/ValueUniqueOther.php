@@ -6,19 +6,17 @@ use atk4\data\Exception;
 use atk4\data\Model;
 
 /**
- * Class ValueUniqueOther
+ * Class ValueUniqueOther.
  *
  * Validate : if value is unique in Model in another field
  *
  * Rule code : atk4_value_unique_other
  *
  * @example ['atk4_value_unique_other',$model,'field_name_to_check']
- *
- * @package atk4\validate\Rules
  */
 class ValueUniqueOther extends ValueUnique
 {
-    public static $rule_id = "atk4_value_unique_other";
+    public static $rule_id = 'atk4_value_unique_other';
 
     public static function getCallback($field, $value, array $params, array $fields): bool
     {

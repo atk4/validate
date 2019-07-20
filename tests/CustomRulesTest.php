@@ -266,7 +266,7 @@ class CustomRulesTest extends PHPUnit_SchemaTestCase
 
         $this->c->rule(
             'v_value', [
-            ['atk4_value_not_in_list', $this->m, null]
+            ['atk4_value_not_in_list', $this->m, null],
         ]
         );
 
