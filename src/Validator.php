@@ -4,6 +4,13 @@
 
 namespace atk4\validate;
 
+use atk4\data\Exception;
+use atk4\data\Model;
+use atk4\validate\Rules\ValueInList;
+use atk4\validate\Rules\ValueNotInList;
+use atk4\validate\Rules\ValueUnique;
+use atk4\validate\Rules\ValueUniqueOther;
+
 /**
  * Controller class for Agile Data model to enable validations.
  *
@@ -13,7 +20,7 @@ namespace atk4\validate;
  */
 class Validator
 {
-    /** @var \atk4\data\Model */
+    /** @var Model */
     public $model;
 
     /**
@@ -48,9 +55,38 @@ class Validator
     public $if_rules = [];
 
     /**
-     * Initialization.
+     * Track value of Valitron Language for rules message
+     *
+     * \Valitron\Validator rules are static and we need to add custom rules :
+     *  - when is called $this->validate
+     *  - when is called $this->validate and the Valitron language is changed
+     *
+     * There is no problem adding rules two times, because in
+     * static method : \Valitron\Validator::add() rules are replaced in static keyValue array :
+     *  - \Valitron\Validator::$_rules
+     *  - \Valitron\Validator::$_ruleMessages
+     *
+     * @var string $valitron_language
      */
-    public function __construct(\atk4\data\Model $model)
+    protected $valitron_language;
+
+    /**
+     * Defined custom rules to load
+     *
+     * @var array
+     */
+    public $custom_rules = [
+        ValueInList::class,
+        ValueNotInList::class,
+        ValueUnique::class,
+        ValueUniqueOther::class
+    ];
+
+    /**
+     * Initialization.
+     * @throws \atk4\core\Exception
+     */
+    public function __construct(Model $model)
     {
         $this->model = $model;
 
@@ -135,13 +171,27 @@ class Validator
     /**
      * Runs all validations.
      *
-     * @param \atk4\data\Model $model
-     * @param string           $intent
+     * @param Model $model
+     * @param string $intent
      *
      * @return array|null
+     * @throws Exception
      */
-    public function validate(\atk4\data\Model $model, string $intent = null)
+    public function validate(Model $model, string $intent = null) :?array
     {
+        // Validator reload rules
+        // - if not loaded
+        // - Valitron\Valitron Language is changed
+        if($this->valitron_language !== \Valitron\Validator::lang())
+        {
+            foreach($this->custom_rules as $custom_rule_class)
+            {
+                $custom_rule_class::setup();
+            }
+
+            $this->valitron_language = \Valitron\Validator::lang();
+        }
+
         // initialize Validator, set data
         $v = new \Valitron\Validator($model->get());
 
@@ -174,5 +224,7 @@ class Validator
 
             return $errors;
         }
+
+        return null;
     }
 }

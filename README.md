@@ -63,3 +63,26 @@ You can also pass callback instead of array of rules.
 Callback receives these parameters $field, $value, $args, $data and should return true/false.
 
 See `/tests` folder for more examples.
+
+# ATK4 - Custom rules
+
+Definition of custom rules :
+
+see src/Rules, you must extend Rules\RuleAbstract and add the class to Validator->custom_rules 
+
+can be used like this :
+
+```php
+$validator = new \atk4\validate\Validator($userModel);
+$validator->rule('email', [ ['atk4_value_unique', $userModel] ]);
+```
+
+Validate unicity of field email of model $userModel against all values of email $userModel.
+
+*Note : You need to specify the model against you want to validate*    
+
+at now there are 4 Model Validation rule :
+ - `atk4_value_unique` ***validate uniqueness on the same model field, need 1 param : Model*** 			  
+ - `atk4_value_unique_other` ***validate uniqueness on another model field, need 2 params : Model, field*** 
+ - `atk4_value_in_list` ***validate if value exists in model field, need 2 params : Model, field***
+ - `atk4_value_not_in_list` ***validate if value not exists in model field, need 2 params : Model, field***
