@@ -14,10 +14,10 @@ abstract class RuleAbstract
     /**
      * Entry point for adding rule
      * you don't have to call this, it will be called one time :
-     *  - in method atk4/validate->validate()
+     *  - in method atk4/validate->validate().
      *
      * it will be called another time :
-     *  - if you have reset the language of \Valitron\Validate
+     *  - if you have reset the language of \Valitron\Validate.
      *
      * @throws Exception
      */
@@ -25,16 +25,17 @@ abstract class RuleAbstract
     {
         Validator::addRule(
             static::getRuleID(),
-            Closure::fromCallable([static::class, "getCallback"]),
+            Closure::fromCallable([static::class, 'getCallback']),
             static::getMessage()
         );
     }
 
     /**
-     * Return the $rule_id of the Rule
+     * Return the $rule_id of the Rule.
+     *
+     * @throws Exception
      *
      * @return string
-     * @throws Exception
      */
     protected static function getRuleID(): string
     {
@@ -47,10 +48,11 @@ abstract class RuleAbstract
     }
 
     /**
-     * Get localized error message for the rule
+     * Get localized error message for the rule.
+     *
+     * @throws Exception
      *
      * @return string
-     * @throws Exception
      */
     public static function getMessage(): string
     {
@@ -68,15 +70,16 @@ abstract class RuleAbstract
     }
 
     /**
-     * The validation callback of the rule
+     * The validation callback of the rule.
      *
      * @param       $field
      * @param       $value
      * @param array $params
      * @param array $fields
      *
-     * @return bool
      * @throws Exception
+     *
+     * @return bool
      */
     abstract public static function getCallback($field, $value, array $params, array $fields): bool;
 }

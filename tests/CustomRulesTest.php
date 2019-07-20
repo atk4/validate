@@ -26,8 +26,8 @@ class CustomRulesTest extends PHPUnit_SchemaTestCase
 
         for ($a = 0; $a < 10; $a++) {
             $data = [
-                'v_value' => 'v_' . $a,
-                'o_value' => 'o_' . $a,
+                'v_value' => 'v_'.$a,
+                'o_value' => 'o_'.$a,
             ];
 
             $this->m->unload()->set($data)->save();
@@ -44,7 +44,7 @@ class CustomRulesTest extends PHPUnit_SchemaTestCase
 
         $this->c->rule(
             'v_value', [
-            ['atk4_value_unique', $this->m]
+            ['atk4_value_unique', $this->m],
         ]
         );
 
@@ -64,7 +64,7 @@ class CustomRulesTest extends PHPUnit_SchemaTestCase
 
         $this->c->rule(
             'v_value', [
-            ['atk4_value_unique', $this->m]
+            ['atk4_value_unique', $this->m],
         ]
         );
 
@@ -85,7 +85,7 @@ class CustomRulesTest extends PHPUnit_SchemaTestCase
 
         $this->c->rule(
             'v_value', [
-            ['atk4_value_unique_other', $this->m, 'o_value']
+            ['atk4_value_unique_other', $this->m, 'o_value'],
         ]
         );
 
@@ -104,7 +104,7 @@ class CustomRulesTest extends PHPUnit_SchemaTestCase
 
         $this->c->rule(
             'v_value', [
-            ['atk4_value_unique_other', $this->m, 'o_value']
+            ['atk4_value_unique_other', $this->m, 'o_value'],
         ]
         );
 
@@ -124,7 +124,7 @@ class CustomRulesTest extends PHPUnit_SchemaTestCase
 
         $this->c->rule(
             'v_value', [
-            ['atk4_value_in_list', $this->m, 'o_value']
+            ['atk4_value_in_list', $this->m, 'o_value'],
         ]
         );
 
@@ -143,7 +143,7 @@ class CustomRulesTest extends PHPUnit_SchemaTestCase
 
         $this->c->rule(
             'v_value', [
-            ['atk4_value_in_list', $this->m, 'o_value']
+            ['atk4_value_in_list', $this->m, 'o_value'],
         ]
         );
 
@@ -163,7 +163,7 @@ class CustomRulesTest extends PHPUnit_SchemaTestCase
 
         $this->c->rule(
             'v_value', [
-            ['atk4_value_not_in_list', $this->m, 'o_value']
+            ['atk4_value_not_in_list', $this->m, 'o_value'],
         ]
         );
 
@@ -182,7 +182,7 @@ class CustomRulesTest extends PHPUnit_SchemaTestCase
 
         $this->c->rule(
             'v_value', [
-            ['atk4_value_not_in_list', $this->m, 'o_value']
+            ['atk4_value_not_in_list', $this->m, 'o_value'],
         ]
         );
 
@@ -201,7 +201,7 @@ class CustomRulesTest extends PHPUnit_SchemaTestCase
 
         $this->c->rule(
             'v_value', [
-            ['atk4_value_not_in_list', $this->m, 'o_value']
+            ['atk4_value_not_in_list', $this->m, 'o_value'],
         ]
         );
 
@@ -228,7 +228,7 @@ class CustomRulesTest extends PHPUnit_SchemaTestCase
 
         $this->c->rule(
             'v_value', [
-            ['atk4_value_not_in_list']
+            ['atk4_value_not_in_list'],
         ]
         );
 
@@ -247,7 +247,7 @@ class CustomRulesTest extends PHPUnit_SchemaTestCase
 
         $this->c->rule(
             'v_value', [
-            ['atk4_value_not_in_list', null, null]
+            ['atk4_value_not_in_list', null, null],
         ]
         );
 
@@ -285,7 +285,7 @@ class CustomRulesTest extends PHPUnit_SchemaTestCase
 
         $this->c->rule(
             'v_value', [
-            ['atk4_value_unique']
+            ['atk4_value_unique'],
         ]
         );
 
@@ -304,7 +304,7 @@ class CustomRulesTest extends PHPUnit_SchemaTestCase
 
         $this->c->rule(
             'v_value', [
-            ['atk4_value_unique', null]
+            ['atk4_value_unique', null],
         ]
         );
 
@@ -325,7 +325,7 @@ class CustomRulesTest extends PHPUnit_SchemaTestCase
 
         $this->c->rule(
             'v_value', [
-            ['atk4_value_unique_other']
+            ['atk4_value_unique_other'],
         ]
         );
 
@@ -344,7 +344,7 @@ class CustomRulesTest extends PHPUnit_SchemaTestCase
 
         $this->c->rule(
             'v_value', [
-            ['atk4_value_unique_other', null, null]
+            ['atk4_value_unique_other', null, null],
         ]
         );
 
@@ -363,7 +363,7 @@ class CustomRulesTest extends PHPUnit_SchemaTestCase
 
         $this->c->rule(
             'v_value', [
-            ['atk4_value_unique_other', $this->m, null]
+            ['atk4_value_unique_other', $this->m, null],
         ]
         );
 
@@ -417,7 +417,7 @@ class RuleTestID extends RuleAbstract
 {
 
     /**
-     * defined only to check exceptions in test
+     * defined only to check exceptions in test.
      */
     public static function getCallback($field, $value, array $params, array $fields): bool
     {
@@ -433,6 +433,6 @@ class RuleTestNoMessage extends RuleTestID
 class RuleTestFallbackMessage extends RuleTestNoMessage
 {
     public static $rule_messages = [
-        'en' => 'fallback error'
+        'en' => 'fallback error',
     ];
 }

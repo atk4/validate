@@ -29,7 +29,7 @@
 namespace atk4\validate\Rules;
 
 /**
- * Class ValueNotInList
+ * Class ValueNotInList.
  *
  * Validate : if value is NOT present against a Model Field
  *
@@ -37,8 +37,6 @@ namespace atk4\validate\Rules;
  *
  * @example ['atk4_value_not_in_list',$model,'field_to_check']
  * @example ['atk4_value_not_in_list',$model->ref('model_to_check'),'field_to_check']
- *
- * @package atk4\validate\Rules
  */
 class ValueNotInList extends ValueInList
 {

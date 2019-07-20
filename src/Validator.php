@@ -55,7 +55,7 @@ class Validator
     public $if_rules = [];
 
     /**
-     * Track value of Valitron Language for rules message
+     * Track value of Valitron Language for rules message.
      *
      * \Valitron\Validator rules are static and we need to add custom rules :
      *  - when is called $this->validate
@@ -66,12 +66,12 @@ class Validator
      *  - \Valitron\Validator::$_rules
      *  - \Valitron\Validator::$_ruleMessages
      *
-     * @var string $valitron_language
+     * @var string
      */
     protected $valitron_language;
 
     /**
-     * Defined custom rules to load
+     * Defined custom rules to load.
      *
      * @var array
      */
@@ -79,11 +79,12 @@ class Validator
         ValueInList::class,
         ValueNotInList::class,
         ValueUnique::class,
-        ValueUniqueOther::class
+        ValueUniqueOther::class,
     ];
 
     /**
      * Initialization.
+     *
      * @throws \atk4\core\Exception
      */
     public function __construct(Model $model)
@@ -175,17 +176,14 @@ class Validator
      * @param string $intent
      *
      * @return array|null
-     * @throws Exception
      */
     public function validate(Model $model, string $intent = null) :?array
     {
         // Validator reload rules
         // - if not loaded
         // - Valitron\Valitron Language is changed
-        if($this->valitron_language !== \Valitron\Validator::lang())
-        {
-            foreach($this->custom_rules as $custom_rule_class)
-            {
+        if ($this->valitron_language !== \Valitron\Validator::lang()) {
+            foreach($this->custom_rules as $custom_rule_class) {
                 $custom_rule_class::setup();
             }
 

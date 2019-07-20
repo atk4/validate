@@ -6,7 +6,7 @@ use atk4\data\Exception;
 use atk4\data\Model;
 
 /**
- * Class ValueInList
+ * Class ValueInList.
  *
  * Validate : if value is present against a Model Field
  *
@@ -14,8 +14,6 @@ use atk4\data\Model;
  *
  * @example ['atk4_value_in_list',$model,'field_to_check']
  * @example ['atk4_value_in_list',$model->ref('model_to_check'),'field_to_check']
- *
- * @package atk4\validate\Rules
  */
 class ValueInList extends RuleAbstract
 {
@@ -32,11 +30,11 @@ class ValueInList extends RuleAbstract
         if (count($params) != 2) {
             throw new Exception(
                 [
-                    'Rule ' . self::$rule_id . ' must have 2 parameters ( Model and Model field to check against)',
+                    'Rule '.self::$rule_id.' must have 2 parameters (Model and Model field to check against)',
                     'field'  => $field,
                     'value'  => $value,
                     'params' => $params,
-                    'fields' => $fields
+                    'fields' => $fields,
                 ]
             );
         }
@@ -47,11 +45,11 @@ class ValueInList extends RuleAbstract
         if (!($ref_model instanceof Model)) {
             throw new Exception(
                 [
-                    'Rule ' . self::$rule_id . ' first param must be a atk4\data\Model (the Model to check against)',
+                    'Rule '.self::$rule_id.' first param must be a atk4\data\Model (the Model to check against)',
                     'field'  => $field,
                     'value'  => $value,
                     'params' => $params,
-                    'fields' => $fields
+                    'fields' => $fields,
                 ]
             );
         }
@@ -59,20 +57,19 @@ class ValueInList extends RuleAbstract
         if (!is_string($ref_model_field)) {
             throw new Exception(
                 [
-                    'Rule ' . self::$rule_id . ' second param must be string (the Model field to check)',
+                    'Rule '.self::$rule_id.' second param must be string (the Model field to check)',
                     'field'  => $field,
                     'value'  => $value,
                     'params' => $params,
-                    'fields' => $fields
+                    'fields' => $fields,
                 ]
             );
         }
 
-        $count = (int)$ref_model->newInstance()
+        $count = (int) $ref_model->newInstance()
                                 ->addCondition($ref_model_field, '=', $value)
                                 ->action('count')
-                                ->getOne()
-        ;
+                                ->getOne();
 
         return $count > 0;
     }
