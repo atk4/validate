@@ -5,7 +5,7 @@ This is validator add-on for Agile Data (https://github.com/atk4/data).
 It uses https://github.com/vlucas/valitron under the hood.
 
 
-[![Build Status](https://travis-ci.org/atk4/validate.png?branch=master)](https://travis-ci.org/atk4/validate)
+[![Build Status](https://travis-ci.org/atk4/validate.png?branch=develop)](https://travis-ci.org/atk4/validate)
 [![Code Climate](https://codeclimate.com/github/atk4/validate/badges/gpa.svg)](https://codeclimate.com/github/atk4/validate)
 [![StyleCI](https://styleci.io/repos/161695320/shield)](https://styleci.io/repos/161695320)
 [![CodeCov](https://codecov.io/gh/atk4/validate/branch/develop/graph/badge.svg)](https://codecov.io/gh/atk4/validate)
@@ -31,14 +31,14 @@ $v = new \atk4\validate\Validator($model);
 
 // set simple validation rule for one field
 // ->rule($field, $rules)
-$v->rule('name', ['required','lengthMin'=>3]);
+$v->rule('name', [ 'required', ['lengthMin', 3] ]);
 
 // set multiple validation rules in one shot
 // ->rules($array_of_rules) // [field=>rules]
 $v->rules([
-    'name' => ['required', 'lengthMin'=>3],
-    'age' => ['integer', 'min'=>0, 'max'=>99],
-    'tail_length' => ['integer', 'min'=>0],
+    'name' => ['required', ['lengthMin',3]],
+    'age' => ['integer', ['min',0], ['max',99]],
+    'tail_length' => ['integer', ['min',0]],
 ]);
 
 // set validation rules based on value of another field
@@ -48,13 +48,18 @@ $v->if(['type'=>'dog'], [
     'age' => ['required'],
     'tail_length' => ['required'],
 ], [
-    'tail_length' => ['equals'=>''], // balls don't have tail
+    'tail_length' => [ ['equals',''] ], // balls don't have tail
 ]);
 
 // you can also pass multiple conditions which will be treated as AND conditions
 $v->if(['type'=>'dog', 'age'=>50], $rules_if_true, $rules_if_false);
+
+// you can also set custom error message like this:
+$v->rule('age', [ ['min', 3, 'message'=>'Common! {field} to small'] ]);
+// and you will get this "Common! Age to small"
 ```
 
 You can also pass callback instead of array of rules.
+Callback receives these parameters $field, $value, $args, $data and should return true/false.
 
 See `/tests` folder for more examples.

@@ -16,10 +16,35 @@ class Validator
     /** @var \atk4\data\Model */
     public $model;
 
-    /** @var array of rules */
+    /**
+     * Array of rules in following format which is natively supported by Valitron mapFieldsRules():
+     *  [
+     *      'foo' => [
+     *          ['required'],
+     *          ['integer', 'message'=>'test 1'],
+     *      ],
+     *      'bar' => [
+     *          ['email'],
+     *          ['lengthBetween', 4, 10, 'message'=>'test 2'],
+     *      ],
+     *  ];.
+     *
+     * @var array
+     */
     public $rules = [];
 
-    /** @var array conditional rules */
+    /**
+     * Array of conditional rules in following format:
+     *  [
+     *      [$conditions, $then_rules, $else_rules],
+     *  ].
+     *
+     * $conditions - array of conditions
+     * $then_rules - array in $this->rules format which will be used if conditions are met
+     * $else_rules - array in $this->rules format which will be used if conditions are not met
+     *
+     * @var array
+     */
     public $if_rules = [];
 
     /**
@@ -28,7 +53,11 @@ class Validator
     public function __construct(\atk4\data\Model $model)
     {
         $this->model = $model;
-        $model->validator = $this;
+
+        if (!isset($model->validator)) {
+            $model->validator = $this;
+        }
+
         $model->addHook('validate', $this);
     }
 
@@ -40,12 +69,12 @@ class Validator
      *
      * @return $this
      */
-    public function rule($field, $rules)
+    public function rule(string $field, $rules)
     {
-        $rules = $this->_normalizeRules($rules);
-
-        // @todo Here we could use array_merge to allow to call rule() multiple times and append rules
-        $this->rules[$field] = $rules;
+        $this->rules[$field] = array_merge(
+            isset($this->rules[$field]) ? $this->rules[$field] : [],
+            $this->_normalizeRules($rules)
+        );
 
         return $this;
     }
@@ -57,25 +86,13 @@ class Validator
      *
      * @return $this
      */
-    public function rules($hash)
+    public function rules(array $hash)
     {
         foreach ($hash as $field=>$rules) {
             $this->rule($field, $rules);
         }
 
         return $this;
-    }
-
-    /**
-     * Normalize rule-set.
-     *
-     * @param array|string|callable $rules
-     *
-     * @return array
-     */
-    protected function _normalizeRules($rules)
-    {
-        return is_array($rules) ? $rules : [$rules];
     }
 
     /**
@@ -87,7 +104,7 @@ class Validator
      *
      * @return $this
      */
-    public function if($conditions, $then_hash, $else_hash = [])
+    public function if(array $conditions, array $then_hash, array $else_hash = [])
     {
         $this->if_rules[] = [
             $conditions,
@@ -99,6 +116,23 @@ class Validator
     }
 
     /**
+     * Normalize rule-set.
+     *
+     * @param array|string|callable $rules
+     *
+     * @return array or arrays
+     */
+    protected function _normalizeRules($rules)
+    {
+        $rules = (array) $rules;
+        foreach ($rules as $key => $rule) {
+            $rules[$key] = (array) $rule;
+        }
+
+        return $rules;
+    }
+
+    /**
      * Runs all validations.
      *
      * @param \atk4\data\Model $model
@@ -106,7 +140,7 @@ class Validator
      *
      * @return array|null
      */
-    public function validate(\atk4\data\Model $model, $intent = null)
+    public function validate(\atk4\data\Model $model, string $intent = null)
     {
         // initialize Validator, set data
         $v = new \Valitron\Validator($model->get());
@@ -126,23 +160,10 @@ class Validator
             $all_rules = array_merge_recursive($all_rules, $test ? $then_hash : $else_hash);
         }
 
-        // validate rules
-        foreach ($all_rules as $field=>$rules) {
-            foreach ($rules as $key=>$rule) {
-                if (is_callable($rule)) {
-                    // parameters - field_name, value, \Valitron\Validator
-                    call_user_func_array($rule, [$field, $model->get($field), $v]);
-                } elseif (is_int($key)) {
-                    // just rule name, like 'required'
-                    $v->rule($rule, $field);
-                } else {
-                    // rule with argument like 'min'=>10
-                    $v->rule($key, $field, $rule);
-                }
-            }
-        }
+        // set up Valitron rules
+        $v->mapFieldsRules($all_rules);
 
-        // if errors then format them to fit atk4 error format
+        // validate and if errors then format them to fit atk4 error format
         if ($v->validate() !== true) {
             $errors = [];
             foreach ($v->errors() as $key => $e) {
