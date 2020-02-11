@@ -17,6 +17,19 @@ jobs:
     strategy:
       matrix:
         php: ['7.2', '7.3', 'latest']
+    services:
+      mysql:
+        image: mysql:5.7
+        env:
+          MYSQL_ROOT_PASSWORD: password
+          DB_DATABASE: dsql_test
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
+      postgres:
+        image: postgres:10-alpine
+        env:
+          POSTGRES_PASSWORD: password
+          POSTGRES_USER: postgres
+        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - uses: actions/checkout@v1
       # need this to trick composer
@@ -39,12 +52,23 @@ jobs:
       - name: Run Tests
         run: |
           mkdir -p build/logs
+          mysql -uroot -ppassword -h mysql -e 'CREATE DATABASE dsql_test;'
+          PGPASSWORD=password psql -h postgres -c 'create database "atk4-dsql-test";' -U postgres
 
       - name: SQLite Testing
-        run: vendor/bin/phpunit --configuration phpunit.xml --coverage-text
+        run: vendor/bin/phpunit --configuration phpunit.xml --coverage-text --exclude-group dns
+
+      - name: MySQL Testing
+        run: vendor/bin/phpunit --configuration phpunit-mysql-workflow.xml --exclude-group dns
+
+      - name: PgSQL Testing
+        run: vendor/bin/phpunit --configuration phpunit-pgsql-workflow.xml --exclude-group dns
+
+      - name: Merge coverage logs
+        run: vendor/bin/phpcov merge build/logs/ --clover build/logs/cc.xml;
 
       - uses: codecov/codecov-action@v1
         if: matrix.php == 'latest'
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          file: build/logs/clover.xml
+          file: build/logs/cc.xml

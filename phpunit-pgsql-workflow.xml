@@ -1,10 +1,15 @@
 <phpunit colors="true" bootstrap="vendor/autoload.php" printerClass="atk4\core\PHPUnit_AgileResultPrinter">
     <php>
-        <var name="DB_DSN" value="pgsql:dbname=atk4-dsql-test;host=localhost" />
+        <var name="DB_DSN" value="pgsql:dbname=atk4-dsql-test;host=postgres" />
         <var name="DB_USER" value="postgres" />
         <var name="DB_PASSWD" value="password" />
         <var name="DB_DBNAME" value="atk4-dsql-test" />
     </php>
+    <testsuites>
+        <testsuite name="tests">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
     <filter>
         <blacklist>
             <directory suffix=".php">./vendor</directory>
@@ -13,11 +18,6 @@
             <directory suffix=".php">./src</directory>
         </whitelist>
     </filter>
-    <testsuites>
-        <testsuite name="tests">
-            <directory>tests</directory>
-        </testsuite>
-    </testsuites>
     <logging>
         <log type="coverage-php" target="build/logs/clover-pgsql.cov"/>
     </logging>
