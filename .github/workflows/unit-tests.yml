@@ -31,10 +31,10 @@ jobs:
           POSTGRES_USER: postgres
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
-      - uses: actions/checkout@v1
-      # need this to trick composer
+      - uses: actions/checkout@v2
       - run: php --version
-      - run: "git branch develop; git checkout develop"
+      # need this to trick composer
+      # - run: "git branch develop; git checkout develop"
       - name: Get Composer Cache Directory
         id: composer-cache
         run: |
