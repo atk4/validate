@@ -1,24 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace atk4\validate\tests;
 
-class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
+use atk4\core\AtkPhpunit;
+use atk4\data\Model;
+use atk4\data\Persistence;
+use atk4\validate\Validator;
+
+class BasicTest extends AtkPhpunit\TestCase
 {
+    /** @var Model */
     public $m;
+
+    /** @var Validator */
     public $c;
 
-    public function setUp()
+    protected function setUp(): void
     {
-        $a = [];
-        $p = new \atk4\data\Persistence_Array($a);
-        $this->m = $m = new \atk4\data\Model($p);
+        $this->m = $m = new Model(new Persistence\Array_());
 
         $m->addField('name');
         $m->addField('age', ['type' => 'number']);
         $m->addField('type', ['required' => true, 'enum' => ['dog', 'ball']]);
         $m->addField('tail_length', ['type' => 'number']);
 
-        $this->c = new \atk4\validate\Validator($m);
+        $this->c = new Validator($m);
     }
 
     /**
@@ -28,7 +36,7 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
     {
         $this->c->rule('name', ['required', ['lengthMin', 3]]);
 
-        $err = $this->m->unload()->set(['name'=>'a'])->validate();
+        $err = $this->m->unload()->set(['name' => 'a'])->validate();
         $this->assertEquals(['name'], array_keys($err));
     }
 
@@ -39,7 +47,7 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
     {
         $this->c->rule('name', ['required', ['lengthMin', 3]]);
 
-        $err = $this->m->unload()->set(['name'=>'a'])->validate();
+        $err = $this->m->unload()->set(['name' => 'a'])->validate();
         $this->assertEquals(['name'], array_keys($err));
     }
 
@@ -49,14 +57,14 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
     public function testMultiple1()
     {
         $this->c->rules([
-            'name'        => 'required',
-            'age'         => ['integer', ['min', 0], ['max', 99]],
+            'name' => 'required',
+            'age' => ['integer', ['min', 0], ['max', 99]],
             'tail_length' => ['integer', ['min', 0]],
         ]);
 
         $err = $this->m->unload()->set([
-            'name'        => null,
-            'age'         => 10,
+            'name' => null,
+            'age' => 10,
             'tail_length' => 5.45,
         ])->validate();
 
@@ -82,7 +90,7 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
             'age' => 10, // odd number, so should throw error
         ])->validate();
 
-        $this->assertEquals(['age'=>'Age should be odd'], $err); // error and custom message
+        $this->assertEquals(['age' => 'Age should be odd'], $err); // error and custom message
     }
 
     /**
@@ -90,9 +98,9 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
      */
     public function testIf()
     {
-        $this->c->if(['type'=>'dog'], [
+        $this->c->if(['type' => 'dog'], [
             // dogs require age and tail_length
-            'age'         => ['required'],
+            'age' => ['required'],
             'tail_length' => ['required'],
         ], [
             // balls should not have tail
@@ -107,14 +115,14 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
 
         // ball should not have tail_length
         $err = $this->m->unload()->set([
-            'type'        => 'ball',
+            'type' => 'ball',
             'tail_length' => 5,
         ])->validate();
         $this->assertEquals(['tail_length'], array_keys($err));
 
         // dogs require age and tail_length
         $err = $this->m->unload()->set([
-            'type'        => 'dog',
+            'type' => 'dog',
             'tail_length' => 5, // age is not set
         ])->validate();
         $this->assertEquals(['age'], array_keys($err));
@@ -126,7 +134,7 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
     public function testMix()
     {
         $this->c->rule('age', [['min', 3]]); // everything should have age at least 3
-        $this->c->if(['type'=>'dog'], [
+        $this->c->if(['type' => 'dog'], [
             // dogs require age and age of dog should be less than 20
             'age' => ['required', ['max', 20]],
         ]);
@@ -138,7 +146,7 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
 
         $err = $this->m->unload()->set([
             'type' => 'ball',
-            'age'  => 2,
+            'age' => 2,
         ])->validate();
         $this->assertEquals(['age'], array_keys($err)); // age must be at least 3 for everything if set
 
@@ -149,19 +157,19 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
 
         $err = $this->m->unload()->set([
             'type' => 'dog',
-            'age'  => 10,
+            'age' => 10,
         ])->validate();
         $this->assertEquals([], array_keys($err)); // for dogs age 10 is ok
 
         $err = $this->m->unload()->set([
             'type' => 'dog',
-            'age'  => 2,
+            'age' => 2,
         ])->validate();
         $this->assertEquals(['age'], array_keys($err)); // for dogs also age should be at least 3
 
         $err = $this->m->unload()->set([
             'type' => 'dog',
-            'age'  => 30,
+            'age' => 30,
         ])->validate();
         $this->assertEquals(['age'], array_keys($err)); // for dogs age should be no more than 20
     }
@@ -172,18 +180,18 @@ class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
     public function testMessage()
     {
         $this->c->rule('age', [
-            ['min', 3, 'message'=>'Common! {field} to small'],
-            ['max', 5, 'message'=>'And now to big'],
+            ['min', 3, 'message' => 'Common! {field} to small'],
+            ['max', 5, 'message' => 'And now to big'],
         ]);
 
         $err = $this->m->unload()->set([
-            'age'  => 2,
+            'age' => 2,
         ])->validate();
-        $this->assertEquals(['age'=>'Common! Age to small'], $err); // custom message here
+        $this->assertEquals(['age' => 'Common! Age to small'], $err); // custom message here
 
         $err = $this->m->unload()->set([
-            'age'  => 10,
+            'age' => 10,
         ])->validate();
-        $this->assertEquals(['age'=>'And now to big'], $err); // custom message here
+        $this->assertEquals(['age' => 'And now to big'], $err); // custom message here
     }
 }

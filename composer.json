@@ -27,6 +27,9 @@
   ],
   "minimum-stability": "dev",
   "prefer-stable": true,
+  "config": {
+    "sort-packages": true
+  },
   "require": {
     "php": ">=7.2.0",
     "atk4/data": "dev-develop",
@@ -39,17 +42,15 @@
   },
   "require-dev": {
     "atk4/schema": "dev-develop",
-    "phpunit/phpunit": "<6",
-    "phpunit/dbunit": ">=1.2",
+    "friendsofphp/php-cs-fixer": "^2.16",
     "phpunit/phpcov": "*",
-    "codeclimate/php-test-reporter": "*"
+    "phpunit/phpunit": "*"
   },
   "require-dev-release": {
     "atk4/schema": "^2.0",
-    "phpunit/phpunit": "<6",
-    "phpunit/dbunit": ">=1.2",
+    "friendsofphp/php-cs-fixer": "^2.16",
     "phpunit/phpcov": "*",
-    "codeclimate/php-test-reporter": "*"
+    "phpunit/phpunit": "*"
   },
   "autoload": {
     "psr-4": {
