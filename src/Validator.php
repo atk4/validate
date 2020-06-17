@@ -1,8 +1,7 @@
 <?php
-
-// vim:ts=4:sw=4:et:fdm=marker:fdl=0
-
 namespace atk4\validate;
+
+use atk4\data\Model;
 
 /**
  * Controller class for Agile Data model to enable validations.
@@ -13,7 +12,7 @@ namespace atk4\validate;
  */
 class Validator
 {
-    /** @var \atk4\data\Model */
+    /** @var Model */
     public $model;
 
     /**
@@ -50,7 +49,7 @@ class Validator
     /**
      * Initialization.
      */
-    public function __construct(\atk4\data\Model $model)
+    public function __construct(Model $model)
     {
         $this->model = $model;
 
@@ -58,13 +57,12 @@ class Validator
             $model->validator = $this;
         }
 
-        $model->addHook('validate', $this);
+        $model->onHook($model::HOOK_VALIDATE, \Closure::fromCallable([$this, 'validate']));
     }
 
     /**
      * Set one rule.
      *
-     * @param string                $field
      * @param array|string|callable $rules
      *
      * @return $this
@@ -98,10 +96,6 @@ class Validator
     /**
      * Set conditional rules.
      *
-     * @param array $conditions
-     * @param array $then_hash
-     * @param array $else_hash
-     *
      * @return $this
      */
     public function if(array $conditions, array $then_hash, array $else_hash = [])
@@ -122,7 +116,7 @@ class Validator
      *
      * @return array or arrays
      */
-    protected function _normalizeRules($rules)
+    protected function _normalizeRules($rules): array
     {
         $rules = (array) $rules;
         foreach ($rules as $key => $rule) {
@@ -135,12 +129,12 @@ class Validator
     /**
      * Runs all validations.
      *
-     * @param \atk4\data\Model $model
-     * @param string           $intent
+     * @param Model  $model
+     * @param string $intent
      *
      * @return array|null
      */
-    public function validate(\atk4\data\Model $model, string $intent = null)
+    public function validate(Model $model, string $intent = null)
     {
         // initialize Validator, set data
         $v = new \Valitron\Validator($model->get());
@@ -154,7 +148,7 @@ class Validator
 
             $test = true;
             foreach ($conditions as $field=>$value) {
-                $test = $test && ($model[$field] == $value);
+                $test = $test && ($model->get($field) == $value);
             }
 
             $all_rules = array_merge_recursive($all_rules, $test ? $then_hash : $else_hash);

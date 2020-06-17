@@ -1,24 +1,29 @@
 <?php
-
 namespace atk4\validate\tests;
 
-class BasicTest extends \atk4\core\PHPUnit_AgileTestCase
+use atk4\core\AtkPhpunit;
+use atk4\data\Model;
+use atk4\data\Persistence;
+use atk4\validate\Validator;
+
+class BasicTest extends AtkPhpunit\TestCase
 {
+    /** @var Model */
     public $m;
+    
+    /** @var Validator */
     public $c;
 
     public function setUp()
     {
-        $a = [];
-        $p = new \atk4\data\Persistence_Array($a);
-        $this->m = $m = new \atk4\data\Model($p);
+        $this->m = $m = new Model(new Persistence\Array_());
 
         $m->addField('name');
         $m->addField('age', ['type' => 'number']);
         $m->addField('type', ['required' => true, 'enum' => ['dog', 'ball']]);
         $m->addField('tail_length', ['type' => 'number']);
 
-        $this->c = new \atk4\validate\Validator($m);
+        $this->c = new Validator($m);
     }
 
     /**
