@@ -15,7 +15,7 @@ class BasicTest extends AtkPhpunit\TestCase
     /** @var Validator */
     public $c;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->m = $m = new Model(new Persistence\Array_());
 
