@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace atk4\validate;
 
 use atk4\data\Model;
@@ -87,7 +89,7 @@ class Validator
      */
     public function rules(array $hash)
     {
-        foreach ($hash as $field=>$rules) {
+        foreach ($hash as $field => $rules) {
             $this->rule($field, $rules);
         }
 
@@ -130,9 +132,6 @@ class Validator
     /**
      * Runs all validations.
      *
-     * @param Model  $model
-     * @param string $intent
-     *
      * @return array|null
      */
     public function validate(Model $model, string $intent = null)
@@ -148,7 +147,7 @@ class Validator
             list($conditions, $then_hash, $else_hash) = $row;
 
             $test = true;
-            foreach ($conditions as $field=>$value) {
+            foreach ($conditions as $field => $value) {
                 $test = $test && ($model->get($field) == $value);
             }
 
