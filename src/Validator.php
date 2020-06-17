@@ -1,4 +1,5 @@
 <?php
+
 namespace atk4\validate;
 
 use atk4\data\Model;

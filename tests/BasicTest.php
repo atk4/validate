@@ -1,4 +1,5 @@
 <?php
+
 namespace atk4\validate\tests;
 
 use atk4\core\AtkPhpunit;
@@ -10,7 +11,7 @@ class BasicTest extends AtkPhpunit\TestCase
 {
     /** @var Model */
     public $m;
-    
+
     /** @var Validator */
     public $c;
 
