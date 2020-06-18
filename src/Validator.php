@@ -148,7 +148,7 @@ class Validator
 
             $test = true;
             foreach ($conditions as $field => $value) {
-                $test = $test && ($model->get($field) == $value);
+                $test = $test && ($model->get($field) === $value);
             }
 
             $all_rules = array_merge_recursive($all_rules, $test ? $then_hash : $else_hash);

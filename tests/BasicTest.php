@@ -37,7 +37,7 @@ class BasicTest extends AtkPhpunit\TestCase
         $this->c->rule('name', ['required', ['lengthMin', 3]]);
 
         $err = $this->m->unload()->set(['name' => 'a'])->validate();
-        $this->assertEquals(['name'], array_keys($err));
+        $this->assertSame(['name'], array_keys($err));
     }
 
     /**
@@ -48,7 +48,7 @@ class BasicTest extends AtkPhpunit\TestCase
         $this->c->rule('name', ['required', ['lengthMin', 3]]);
 
         $err = $this->m->unload()->set(['name' => 'a'])->validate();
-        $this->assertEquals(['name'], array_keys($err));
+        $this->assertSame(['name'], array_keys($err));
     }
 
     /**
@@ -68,7 +68,7 @@ class BasicTest extends AtkPhpunit\TestCase
             'tail_length' => 5.45,
         ])->validate();
 
-        $this->assertEquals(['name', 'tail_length'], array_keys($err));
+        $this->assertSame(['name', 'tail_length'], array_keys($err));
     }
 
     /**
@@ -80,7 +80,7 @@ class BasicTest extends AtkPhpunit\TestCase
         $this->c->rule('age', [
             [
                 function ($field, $value, $params, $data) {
-                    return $value % 2 != 0;
+                    return $value % 2 !== 0;
                 },
                 'message' => 'Age should be odd',
             ],
@@ -90,7 +90,7 @@ class BasicTest extends AtkPhpunit\TestCase
             'age' => 10, // odd number, so should throw error
         ])->validate();
 
-        $this->assertEquals(['age' => 'Age should be odd'], $err); // error and custom message
+        $this->assertSame(['age' => 'Age should be odd'], $err); // error and custom message
     }
 
     /**
@@ -111,21 +111,21 @@ class BasicTest extends AtkPhpunit\TestCase
         $err = $this->m->unload()->set([
             'type' => 'ball',
         ])->validate();
-        $this->assertEquals([], array_keys($err));
+        $this->assertSame([], array_keys($err));
 
         // ball should not have tail_length
         $err = $this->m->unload()->set([
             'type' => 'ball',
             'tail_length' => 5,
         ])->validate();
-        $this->assertEquals(['tail_length'], array_keys($err));
+        $this->assertSame(['tail_length'], array_keys($err));
 
         // dogs require age and tail_length
         $err = $this->m->unload()->set([
             'type' => 'dog',
             'tail_length' => 5, // age is not set
         ])->validate();
-        $this->assertEquals(['age'], array_keys($err));
+        $this->assertSame(['age'], array_keys($err));
     }
 
     /**
@@ -142,36 +142,36 @@ class BasicTest extends AtkPhpunit\TestCase
         $err = $this->m->unload()->set([
             'type' => 'ball',
         ])->validate();
-        $this->assertEquals([], array_keys($err)); // age can be blank for balls
+        $this->assertSame([], array_keys($err)); // age can be blank for balls
 
         $err = $this->m->unload()->set([
             'type' => 'ball',
             'age' => 2,
         ])->validate();
-        $this->assertEquals(['age'], array_keys($err)); // age must be at least 3 for everything if set
+        $this->assertSame(['age'], array_keys($err)); // age must be at least 3 for everything if set
 
         $err = $this->m->unload()->set([
             'type' => 'dog',
         ])->validate();
-        $this->assertEquals(['age'], array_keys($err)); // for dogs age is required
+        $this->assertSame(['age'], array_keys($err)); // for dogs age is required
 
         $err = $this->m->unload()->set([
             'type' => 'dog',
             'age' => 10,
         ])->validate();
-        $this->assertEquals([], array_keys($err)); // for dogs age 10 is ok
+        $this->assertSame([], array_keys($err)); // for dogs age 10 is ok
 
         $err = $this->m->unload()->set([
             'type' => 'dog',
             'age' => 2,
         ])->validate();
-        $this->assertEquals(['age'], array_keys($err)); // for dogs also age should be at least 3
+        $this->assertsame(['age'], array_keys($err)); // for dogs also age should be at least 3
 
         $err = $this->m->unload()->set([
             'type' => 'dog',
             'age' => 30,
         ])->validate();
-        $this->assertEquals(['age'], array_keys($err)); // for dogs age should be no more than 20
+        $this->assertSame(['age'], array_keys($err)); // for dogs age should be no more than 20
     }
 
     /**
@@ -187,11 +187,11 @@ class BasicTest extends AtkPhpunit\TestCase
         $err = $this->m->unload()->set([
             'age' => 2,
         ])->validate();
-        $this->assertEquals(['age' => 'Common! Age to small'], $err); // custom message here
+        $this->assertSame(['age' => 'Common! Age to small'], $err); // custom message here
 
         $err = $this->m->unload()->set([
             'age' => 10,
         ])->validate();
-        $this->assertEquals(['age' => 'And now to big'], $err); // custom message here
+        $this->assertSame(['age' => 'And now to big'], $err); // custom message here
     }
 }
