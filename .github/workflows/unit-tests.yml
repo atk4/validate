@@ -31,14 +31,14 @@ jobs:
           MYSQL_ROOT_PASSWORD: atk4_pass
           MYSQL_USER: atk4_test
           MYSQL_PASSWORD: atk4_pass
-          MYSQL_DATABASE: atk4_test__data
+          MYSQL_DATABASE: atk4_test__validate
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=5
       postgres:
         image: postgres:12-alpine
         env:
           POSTGRES_USER: atk4_test
           POSTGRES_PASSWORD: atk4_pass
-          POSTGRES_DB: atk4_test__data
+          POSTGRES_DB: atk4_test__validate
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
     steps:
       - name: Checkout
