@@ -37,7 +37,7 @@
   },
   "require-release": {
     "php": ">=7.3.0",
-    "atk4/data": "^2.0",
+    "atk4/data": "~2.3.0",
     "vlucas/valitron": "^1.4"
   },
   "require-dev": {
@@ -47,7 +47,7 @@
     "phpunit/phpunit": "*"
   },
   "require-dev-release": {
-    "atk4/schema": "^2.0",
+    "atk4/schema": "~2.3.0",
     "friendsofphp/php-cs-fixer": "^2.16",
     "phpunit/phpcov": "*",
     "phpunit/phpunit": "*"
