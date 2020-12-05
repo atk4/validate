@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace atk4\validate;
+namespace Atk4\Validate;
 
-use atk4\data\Model;
+use Atk4\Data\Model;
 
 /**
  * Controller class for Agile Data model to enable validations.
  *
  * Use https://github.com/vlucas/valitron under the hood.
  *
- * $v = new \atk4\validate\Validator($model);
+ * $v = new \Atk4\Validate\Validator($model);
  */
 class Validator
 {
@@ -157,7 +157,7 @@ class Validator
         // set up Valitron rules
         $v->mapFieldsRules($all_rules);
 
-        // validate and if errors then format them to fit atk4 error format
+        // validate and if errors then format them to fit Atk4 error format
         if ($v->validate() !== true) {
             $errors = [];
             foreach ($v->errors() as $key => $e) {

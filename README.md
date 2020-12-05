@@ -27,7 +27,7 @@ $model->addField('tail_length', ['type' => 'number']);
 
 // add validator to your model
 // also will register itself as $model->validator property
-$v = new \atk4\validate\Validator($model);
+$v = new \Atk4\Validate\Validator($model);
 
 // set simple validation rule for one field
 // ->rule($field, $rules)

@@ -52,12 +52,12 @@
   },
   "autoload": {
     "psr-4": {
-      "atk4\\validate\\": "src/"
+      "Atk4\\Validate\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "atk4\\validate\\tests\\": "tests/"
+      "Atk4\\Validate\\Tests\\": "tests/"
     }
   }
 }

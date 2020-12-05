@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace atk4\validate\tests;
+namespace Atk4\Validate\Tests;
 
-use atk4\core\AtkPhpunit;
-use atk4\data\Model;
-use atk4\data\Persistence;
-use atk4\validate\Validator;
+use Atk4\Core\AtkPhpunit;
+use Atk4\Data\Model;
+use Atk4\Data\Persistence;
+use Atk4\Validate\Validator;
 
 class BasicTest extends AtkPhpunit\TestCase
 {
