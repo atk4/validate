@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Atk4\Validate\Tests;
 
-use Atk4\Core\AtkPhpunit;
+use Atk4\Core\Phpunit\TestCase;
 use Atk4\Data\Model;
 use Atk4\Data\Persistence;
 use Atk4\Validate\Validator;
 
-class BasicTest extends AtkPhpunit\TestCase
+class BasicTest extends TestCase
 {
     /** @var Model */
     public $m;
@@ -36,7 +36,7 @@ class BasicTest extends AtkPhpunit\TestCase
     {
         $this->c->rule('name', ['required', ['lengthMin', 3]]);
 
-        $err = $this->m->unload()->set('name', 'a')->validate();
+        $err = $this->m->createEntity()->set('name', 'a')->validate();
         $this->assertSame(['name'], array_keys($err));
     }
 
@@ -47,7 +47,7 @@ class BasicTest extends AtkPhpunit\TestCase
     {
         $this->c->rule('name', ['required', ['lengthMin', 3]]);
 
-        $err = $this->m->unload()->set('name', 'a')->validate();
+        $err = $this->m->createEntity()->set('name', 'a')->validate();
         $this->assertSame(['name'], array_keys($err));
     }
 
@@ -62,7 +62,7 @@ class BasicTest extends AtkPhpunit\TestCase
             'tail_length' => ['integer', ['min', 0]],
         ]);
 
-        $err = $this->m->unload()->setMulti([
+        $err = $this->m->createEntity()->setMulti([
             'name' => null,
             'age' => 10,
             'tail_length' => 5.45,
@@ -86,7 +86,7 @@ class BasicTest extends AtkPhpunit\TestCase
             ],
         ]);
 
-        $err = $this->m->unload()->setMulti([
+        $err = $this->m->createEntity()->setMulti([
             'age' => 10, // odd number, so should throw error
         ])->validate();
 
@@ -108,20 +108,20 @@ class BasicTest extends AtkPhpunit\TestCase
         ]);
 
         // ball don't require tail_length and age
-        $err = $this->m->unload()->setMulti([
+        $err = $this->m->createEntity()->setMulti([
             'type' => 'ball',
         ])->validate();
         $this->assertSame([], array_keys($err));
 
         // ball should not have tail_length
-        $err = $this->m->unload()->setMulti([
+        $err = $this->m->createEntity()->setMulti([
             'type' => 'ball',
             'tail_length' => 5,
         ])->validate();
         $this->assertSame(['tail_length'], array_keys($err));
 
         // dogs require age and tail_length
-        $err = $this->m->unload()->setMulti([
+        $err = $this->m->createEntity()->setMulti([
             'type' => 'dog',
             'tail_length' => 5, // age is not set
         ])->validate();
@@ -139,35 +139,35 @@ class BasicTest extends AtkPhpunit\TestCase
             'age' => ['required', ['max', 20]],
         ]);
 
-        $err = $this->m->unload()->setMulti([
+        $err = $this->m->createEntity()->setMulti([
             'type' => 'ball',
         ])->validate();
         $this->assertSame([], array_keys($err)); // age can be blank for balls
 
-        $err = $this->m->unload()->setMulti([
+        $err = $this->m->createEntity()->setMulti([
             'type' => 'ball',
             'age' => 2,
         ])->validate();
         $this->assertSame(['age'], array_keys($err)); // age must be at least 3 for everything if set
 
-        $err = $this->m->unload()->setMulti([
+        $err = $this->m->createEntity()->setMulti([
             'type' => 'dog',
         ])->validate();
         $this->assertSame(['age'], array_keys($err)); // for dogs age is required
 
-        $err = $this->m->unload()->setMulti([
+        $err = $this->m->createEntity()->setMulti([
             'type' => 'dog',
             'age' => 10,
         ])->validate();
         $this->assertSame([], array_keys($err)); // for dogs age 10 is ok
 
-        $err = $this->m->unload()->setMulti([
+        $err = $this->m->createEntity()->setMulti([
             'type' => 'dog',
             'age' => 2,
         ])->validate();
         $this->assertsame(['age'], array_keys($err)); // for dogs also age should be at least 3
 
-        $err = $this->m->unload()->setMulti([
+        $err = $this->m->createEntity()->setMulti([
             'type' => 'dog',
             'age' => 30,
         ])->validate();
@@ -184,12 +184,12 @@ class BasicTest extends AtkPhpunit\TestCase
             ['max', 5, 'message' => 'And now to big'],
         ]);
 
-        $err = $this->m->unload()->setMulti([
+        $err = $this->m->createEntity()->setMulti([
             'age' => 2,
         ])->validate();
         $this->assertSame(['age' => 'Common! Age to small'], $err); // custom message here
 
-        $err = $this->m->unload()->setMulti([
+        $err = $this->m->createEntity()->setMulti([
             'age' => 10,
         ])->validate();
         $this->assertSame(['age' => 'And now to big'], $err); // custom message here
