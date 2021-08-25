@@ -73,7 +73,7 @@ class Validator
     public function rule(string $field, $rules)
     {
         $this->rules[$field] = array_merge(
-            isset($this->rules[$field]) ? $this->rules[$field] : [],
+            $this->rules[$field] ?? [],
             $this->_normalizeRules($rules)
         );
 
@@ -144,7 +144,7 @@ class Validator
         $all_rules = $this->rules;
 
         foreach ($this->if_rules as $row) {
-            list($conditions, $then_hash, $else_hash) = $row;
+            [$conditions, $then_hash, $else_hash] = $row;
 
             $test = true;
             foreach ($conditions as $field => $value) {

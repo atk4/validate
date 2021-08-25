@@ -41,12 +41,12 @@
     "vlucas/valitron": "^1.4"
   },
   "require-dev": {
-    "friendsofphp/php-cs-fixer": "^2.16",
+    "friendsofphp/php-cs-fixer": "^3.0",
     "phpunit/phpcov": "*",
     "phpunit/phpunit": "*"
   },
   "require-dev-release": {
-    "friendsofphp/php-cs-fixer": "^2.16",
+    "friendsofphp/php-cs-fixer": "^3.0",
     "phpunit/phpcov": "*",
     "phpunit/phpunit": "*"
   },
