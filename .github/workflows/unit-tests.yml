@@ -2,11 +2,9 @@ name: Unit Testing
 
 on:
   pull_request:
-    branches: '**'
   push:
-    branches: '**'
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0 0/2 * * *'
 
 jobs:
   unit-test:
@@ -17,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['7.3', 'latest']
+        php: ['7.4', 'latest']
         type: ['Phpunit']
         include:
           - php: 'latest'
