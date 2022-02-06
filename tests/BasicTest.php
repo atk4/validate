@@ -26,12 +26,12 @@ class BasicTest extends TestCase
         ]);
     }
 
-    protected function getModel(): Model
+    protected function createModel(): Model
     {
         return new ModelTest($this->db);
     }
 
-    protected function getValidator(Model $model): Validator
+    protected function createValidator(Model $model): Validator
     {
         return new Validator($model);
     }
@@ -41,8 +41,8 @@ class BasicTest extends TestCase
      */
     public function testSimple1(): void
     {
-        $model = $this->getModel();
-        $validator = $this->getValidator($model);
+        $model = $this->createModel();
+        $validator = $this->createValidator($model);
 
         $validator->rule('name', ['required', ['lengthMin', 3]]);
 
@@ -55,8 +55,8 @@ class BasicTest extends TestCase
      */
     public function testSimple2(): void
     {
-        $model = $this->getModel();
-        $validator = $this->getValidator($model);
+        $model = $this->createModel();
+        $validator = $this->createValidator($model);
 
         $validator->rule('name', ['required', ['lengthMin', 3]]);
 
@@ -69,8 +69,8 @@ class BasicTest extends TestCase
      */
     public function testMultiple1(): void
     {
-        $model = $this->getModel();
-        $validator = $this->getValidator($model);
+        $model = $this->createModel();
+        $validator = $this->createValidator($model);
 
         $validator->rules([
             'name' => ['required'],
@@ -92,8 +92,8 @@ class BasicTest extends TestCase
      */
     public function testCallback1(): void
     {
-        $model = $this->getModel();
-        $validator = $this->getValidator($model);
+        $model = $this->createModel();
+        $validator = $this->createValidator($model);
 
         // Age should be odd (nepāra skaitlis)
         $validator->rule('age', [
@@ -117,8 +117,8 @@ class BasicTest extends TestCase
      */
     public function testIf(): void
     {
-        $model = $this->getModel();
-        $validator = $this->getValidator($model);
+        $model = $this->createModel();
+        $validator = $this->createValidator($model);
 
         $validator->if(['type' => 'dog'], [
             // dogs require age and tail_length
@@ -155,8 +155,8 @@ class BasicTest extends TestCase
      */
     public function testMix(): void
     {
-        $model = $this->getModel();
-        $validator = $this->getValidator($model);
+        $model = $this->createModel();
+        $validator = $this->createValidator($model);
 
         $validator->rule('age', [['min', 3]]); // everything should have age at least 3
         $validator->if(['type' => 'dog'], [
@@ -204,8 +204,8 @@ class BasicTest extends TestCase
      */
     public function testMessage(): void
     {
-        $model = $this->getModel();
-        $validator = $this->getValidator($model);
+        $model = $this->createModel();
+        $validator = $this->createValidator($model);
 
         $validator->rule('age', [
             ['min', 3, 'message' => 'Common! {field} to small'],
@@ -225,8 +225,8 @@ class BasicTest extends TestCase
 
     public function testModelHookValidate(): void
     {
-        $model = $this->getModel();
-        $validator = $this->getValidator($model);
+        $model = $this->createModel();
+        $validator = $this->createValidator($model);
         $validator->rule('name', ['required', ['lengthMin', 3]]);
 
         $entity = $model->createEntity();

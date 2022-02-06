@@ -49,6 +49,8 @@ class Validator
 
     /**
      * Set one rule.
+     *
+     * @return $this
      */
     public function rule(string $field, array $rules): self
     {
