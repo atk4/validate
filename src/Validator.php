@@ -15,8 +15,7 @@ use Atk4\Data\Model;
  */
 class Validator
 {
-    /** @var Model */
-    public $model;
+    public Model $model;
 
     /**
      * Array of rules in following format which is natively supported by Valitron mapFieldsRules():
@@ -30,10 +29,8 @@ class Validator
      *          ['lengthBetween', 4, 10, 'message'=>'test 2'],
      *      ],
      *  ];.
-     *
-     * @var array
      */
-    public $rules = [];
+    public array $rules = [];
 
     /**
      * Array of conditional rules in following format:
@@ -44,33 +41,20 @@ class Validator
      * $conditions - array of conditions
      * $then_rules - array in $this->rules format which will be used if conditions are met
      * $else_rules - array in $this->rules format which will be used if conditions are not met
-     *
-     * @var array
      */
-    public $if_rules = [];
+    public array $if_rules = [];
 
-    /**
-     * Initialization.
-     */
     public function __construct(Model $model)
     {
         $this->model = $model;
 
-        if (!isset($model->validator)) {
-            $model->validator = $this;
-        }
-
-        $model->onHook($model::HOOK_VALIDATE, \Closure::fromCallable([$this, 'validate']));
+        $model->onHook(Model::HOOK_VALIDATE, \Closure::fromCallable([$this, 'validate']));
     }
 
     /**
      * Set one rule.
-     *
-     * @param array|string|callable $rules
-     *
-     * @return $this
      */
-    public function rule(string $field, $rules)
+    public function rule(string $field, array $rules): self
     {
         $this->rules[$field] = array_merge(
             $this->rules[$field] ?? [],
@@ -83,11 +67,11 @@ class Validator
     /**
      * Set multiple rules.
      *
-     * @param array $hash Array of [$field=>$rules]
+     * @param array<string, array> $hash array with field name as key and rules as value
      *
      * @return $this
      */
-    public function rules(array $hash)
+    public function rules(array $hash): self
     {
         foreach ($hash as $field => $rules) {
             $this->rule($field, $rules);
@@ -98,10 +82,8 @@ class Validator
 
     /**
      * Set conditional rules.
-     *
-     * @return $this
      */
-    public function if(array $conditions, array $then_hash, array $else_hash = [])
+    public function if(array $conditions, array $then_hash, array $else_hash = []): self
     {
         $this->if_rules[] = [
             $conditions,
@@ -130,11 +112,9 @@ class Validator
     }
 
     /**
-     * Runs all validations.
-     *
-     * @return array|null
+     * Runs all validations and return an array with validation errors.
      */
-    public function validate(Model $model, string $intent = null)
+    public function validate(Model $model, string $intent = null): array
     {
         // initialize Validator, set data
         $v = new \Valitron\Validator($model->get());
@@ -158,15 +138,17 @@ class Validator
         $v->mapFieldsRules($all_rules);
 
         // validate and if errors then format them to fit Atk4 error format
-        if ($v->validate() !== true) {
-            $errors = [];
-            foreach ($v->errors() as $key => $e) {
-                if (!isset($errors[$key])) {
-                    $errors[$key] = array_pop($e);
-                }
-            }
-
-            return $errors;
+        if ($v->validate() === true) {
+            return [];
         }
+
+        $errors = [];
+        foreach ($v->errors() as $key => $e) {
+            if (!isset($errors[$key])) {
+                $errors[$key] = array_pop($e);
+            }
+        }
+
+        return $errors;
     }
 }

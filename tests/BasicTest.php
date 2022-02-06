@@ -4,35 +4,35 @@ declare(strict_types=1);
 
 namespace Atk4\Validate\Tests;
 
-use Atk4\Core\Phpunit\TestCase;
 use Atk4\Data\Model;
-use Atk4\Data\Persistence;
+use Atk4\Data\Schema\TestCase;
 use Atk4\Validate\Validator;
 
 class BasicTest extends TestCase
 {
-    /** @var Model */
-    public $m;
+    public ?Model $m;
 
-    /** @var Validator */
-    public $c;
+    public ?Validator $c;
 
     protected function setUp(): void
     {
-        $this->m = $m = new Model(new Persistence\Array_());
+        parent::setUp();
 
-        $m->addField('name');
-        $m->addField('age', ['type' => 'number']);
-        $m->addField('type', ['required' => true, 'enum' => ['dog', 'ball']]);
-        $m->addField('tail_length', ['type' => 'number']);
+        $this->setDb([
+            'validator_test' => [
+                ['id' => 1, 'name' => 'ball', 'type' => 'ball', 'tail_length' => 0, 'age' => 30],
+            ],
+        ]);
 
-        $this->c = new Validator($m);
+        $this->m = new ModelTest($this->db);
+
+        $this->c = new Validator($this->m);
     }
 
     /**
      * Name to short.
      */
-    public function testSimple1()
+    public function testSimple1(): void
     {
         $this->c->rule('name', ['required', ['lengthMin', 3]]);
 
@@ -43,7 +43,7 @@ class BasicTest extends TestCase
     /**
      * Name required.
      */
-    public function testSimple2()
+    public function testSimple2(): void
     {
         $this->c->rule('name', ['required', ['lengthMin', 3]]);
 
@@ -54,10 +54,10 @@ class BasicTest extends TestCase
     /**
      * Multiple errors.
      */
-    public function testMultiple1()
+    public function testMultiple1(): void
     {
         $this->c->rules([
-            'name' => 'required',
+            'name' => ['required'],
             'age' => ['integer', ['min', 0], ['max', 99]],
             'tail_length' => ['integer', ['min', 0]],
         ]);
@@ -74,7 +74,7 @@ class BasicTest extends TestCase
     /**
      * Callback instead of rules.
      */
-    public function testCallback1()
+    public function testCallback1(): void
     {
         // Age should be odd (nepāra skaitlis)
         $this->c->rule('age', [
@@ -96,7 +96,7 @@ class BasicTest extends TestCase
     /**
      * Conditional rules.
      */
-    public function testIf()
+    public function testIf(): void
     {
         $this->c->if(['type' => 'dog'], [
             // dogs require age and tail_length
@@ -131,7 +131,7 @@ class BasicTest extends TestCase
     /**
      * Mix rules.
      */
-    public function testMix()
+    public function testMix(): void
     {
         $this->c->rule('age', [['min', 3]]); // everything should have age at least 3
         $this->c->if(['type' => 'dog'], [
@@ -165,7 +165,7 @@ class BasicTest extends TestCase
             'type' => 'dog',
             'age' => 2,
         ])->validate();
-        $this->assertsame(['age'], array_keys($err)); // for dogs also age should be at least 3
+        $this->assertSame(['age'], array_keys($err)); // for dogs also age should be at least 3
 
         $err = $this->m->createEntity()->setMulti([
             'type' => 'dog',
@@ -177,7 +177,7 @@ class BasicTest extends TestCase
     /**
      * Test custom message.
      */
-    public function testMessage()
+    public function testMessage(): void
     {
         $this->c->rule('age', [
             ['min', 3, 'message' => 'Common! {field} to small'],
@@ -193,5 +193,23 @@ class BasicTest extends TestCase
             'age' => 10,
         ])->validate();
         $this->assertSame(['age' => 'And now to big'], $err); // custom message here
+    }
+
+    public function testModelHookValidate(): void
+    {
+        $entity = $this->m->createEntity();
+
+        $this->c->rule('name', ['required', ['lengthMin', 3]]);
+
+        $entity->setMulti([
+            'name' => 'abcd',
+            'type' => 'dog',
+        ]);
+
+        $err = $entity->validate();
+        $this->assertSame([], $err);
+
+        // will not raise exception for return an empty array in place of null
+        $entity->save();
     }
 }

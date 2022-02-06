@@ -1,21 +1,23 @@
 <phpunit bootstrap="vendor/autoload.php" printerClass="Atk4\Core\Phpunit\ResultPrinter" colors="true">
-    <php>
-        <var name="DB_DSN" value="sqlite::memory:" />
-        <var name="DB_USER" value="" />
-        <var name="DB_PASSWD" value="" />
-        <var name="DB_DBNAME" value="" />
-    </php>
-    <filter>
-        <whitelist processUncoveredFilesFromWhitelist="true">
-            <directory suffix=".php">src</directory>
-        </whitelist>
-    </filter>
-    <testsuites>
-        <testsuite name="tests">
-            <directory>tests</directory>
-        </testsuite>
-    </testsuites>
-    <logging>
-        <log type="coverage-php" target="build/logs/clover.cov"/>
-    </logging>
+  <php>
+    <env name="DB_DSN" value="sqlite::memory:" />
+    <env name="DB_USER" value="" />
+    <env name="DB_PASSWORD" value="" />
+  </php>
+  <testsuites>
+    <testsuite name="tests">
+      <directory>tests</directory>
+    </testsuite>
+  </testsuites>
+  <listeners>
+    <listener class="JohnKary\PHPUnit\Listener\SpeedTrapListener" />
+  </listeners>
+  <coverage>
+    <include>
+      <directory suffix=".php">src</directory>
+    </include>
+    <report>
+      <php outputFile="coverage/phpunit.cov" />
+    </report>
+  </coverage>
 </phpunit>
