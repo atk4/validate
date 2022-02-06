@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Atk4\Validate;
 
+use Atk4\Core\WarnDynamicPropertyTrait;
 use Atk4\Data\Model;
 
 /**
@@ -15,6 +16,7 @@ use Atk4\Data\Model;
  */
 class Validator
 {
+    use WarnDynamicPropertyTrait;
     /**
      * Array of rules in following format which is natively supported by Valitron mapFieldsRules():
      *  [
@@ -80,6 +82,8 @@ class Validator
 
     /**
      * Set conditional rules.
+     *
+     * @return $this
      */
     public function if(array $conditions, array $then_hash, array $else_hash = []): self
     {
