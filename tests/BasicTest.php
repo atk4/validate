@@ -10,17 +10,18 @@ use Atk4\Validate\Validator;
 
 class BasicTest extends TestCase
 {
-    public ?Model $m;
-
-    public ?Validator $c;
-
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->setDb([
             'validator_test' => [
-                ['id' => 1, 'name' => 'ball', 'type' => 'ball', 'tail_length' => 0, 'age' => 30],
+                1 => [
+                    'name' => 'John',
+                    'age' => 22,
+                    'type' => 'dog',
+                    'tail_length' => 5,
+                ],
             ],
         ]);
     }
@@ -226,11 +227,9 @@ class BasicTest extends TestCase
     {
         $model = $this->getModel();
         $validator = $this->getValidator($model);
-
-        $entity = $model->createEntity();
-
         $validator->rule('name', ['required', ['lengthMin', 3]]);
 
+        $entity = $model->createEntity();
         $entity->setMulti([
             'name' => 'abcd',
             'type' => 'dog',
