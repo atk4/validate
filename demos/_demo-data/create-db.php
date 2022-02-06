@@ -19,6 +19,12 @@ unset($sqliteFile);
 /** @var Persistence\Sql $db */
 require_once __DIR__ . '/../init-db.php';
 
+if (getenv('GITHUB_JOB') === 'unit-test') {
+    echo "skip db creation in create-db\n\n";
+
+    return;
+}
+
 (new Migrator(new ModelTest($db)))->create();
 
 echo "import complete!\n\n";
