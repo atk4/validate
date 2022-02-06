@@ -15,8 +15,6 @@ use Atk4\Data\Model;
  */
 class Validator
 {
-    public Model $model;
-
     /**
      * Array of rules in following format which is natively supported by Valitron mapFieldsRules():
      *  [
@@ -46,8 +44,6 @@ class Validator
 
     public function __construct(Model $model)
     {
-        $this->model = $model;
-
         $model->onHook(Model::HOOK_VALIDATE, \Closure::fromCallable([$this, 'validate']));
     }
 
