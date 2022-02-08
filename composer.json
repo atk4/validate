@@ -32,12 +32,12 @@
   },
   "require": {
     "php": ">=7.4.0",
-    "atk4/data": "2.4.*",
+    "atk4/data": "dev-develop",
     "vlucas/valitron": "^1.4"
   },
   "require-release": {
     "php": ">=7.4.0",
-    "atk4/data": "~2.4.0",
+    "atk4/data": "~3.0.0",
     "vlucas/valitron": "^1.4"
   },
   "require-dev": {
