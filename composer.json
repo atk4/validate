@@ -1,72 +1,66 @@
 {
-  "name": "atk4/validate",
-  "description": "Agile Data - Validator add-on",
-  "license": "MIT",
-  "type": "library",
-  "keywords": [
-    "framework",
-    "orm",
-    "query",
-    "active record",
-    "sql",
-    "builder",
-    "nosql",
-    "mongodb",
-    "mysql",
-    "postgresql",
-    "validator",
-    "validate"
-  ],
-  "authors": [
-    {
-      "name": "Romans Malinovskis",
-      "email": "romans@agiletoolkit.org",
-      "homepage": "https://nearly.guru/"
+    "name": "atk4/validate",
+    "description": "Agile Data - Validator add-on",
+    "license": "MIT",
+    "type": "library",
+    "keywords": [
+        "framework",
+        "orm",
+        "query",
+        "active record",
+        "sql",
+        "builder",
+        "nosql",
+        "mongodb",
+        "mysql",
+        "postgresql",
+        "validator",
+        "validate"
+    ],
+    "authors": [
+        {
+            "name": "Romans Malinovskis",
+            "email": "romans@agiletoolkit.org",
+            "homepage": "https://nearly.guru/"
+        },
+        {
+            "name": "Francesco Danti",
+            "email": "fdanti@gmail.com"
+        }
+    ],
+    "homepage": "https://github.com/atk4/validate",
+    "require": {
+        "php": ">=7.4 <8.2",
+        "atk4/data": "~3.1.0",
+        "vlucas/valitron": "^1.4"
     },
-    {
-      "name": "Francesco Danti",
-      "email": "fdanti@gmail.com"
-    }
-  ],
-  "homepage": "https://github.com/atk4/validate",
-  "require": {
-    "php": ">=7.4 <8.2",
-    "ext-pdo": "*",
-    "atk4/data": "dev-develop",
-    "vlucas/valitron": "^1.4"
-  },
-  "require-release": {
-    "php": ">=7.4 <8.2",
-    "atk4/data": "~3.1.0",
-    "vlucas/valitron": "^1.4"
-  },
-  "require-dev": {
-    "ergebnis/composer-normalize": "^2.13",
-    "friendsofphp/php-cs-fixer": "^3.0",
-    "johnkary/phpunit-speedtrap": "^3.3",
-    "phpstan/extension-installer": "^1.1",
-    "phpstan/phpstan": "^1.0",
-    "phpstan/phpstan-deprecation-rules": "^1.0",
-    "phpunit/phpunit": "^9.5.5",
-    "symfony/console": "^4.4.30 || ^5.3.7"
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true,
-  "autoload": {
-    "psr-4": {
-      "Atk4\\Validate\\": "src/"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Atk4\\Validate\\Tests\\": "tests/"
-    }
-  },
-  "config": {
-    "allow-plugins": {
-      "ergebnis/composer-normalize": true,
-      "phpstan/extension-installer": true
+    "require-dev": {
+        "ergebnis/composer-normalize": "^2.13",
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "johnkary/phpunit-speedtrap": "^3.3",
+        "phpstan/extension-installer": "^1.1",
+        "phpstan/phpstan": "^1.0",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "phpunit/phpunit": "^9.5.5",
+        "symfony/console": "^4.4.30 || ^5.3.7"
     },
-    "sort-packages": true
-  }
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Atk4\\Validate\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Atk4\\Validate\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "ergebnis/composer-normalize": true,
+            "phpstan/extension-installer": true
+        },
+        "sort-packages": true
+    }
 }
