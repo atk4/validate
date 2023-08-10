@@ -30,13 +30,13 @@
   ],
   "homepage": "https://github.com/atk4/validate",
   "require": {
-    "php": ">=7.4 <8.2",
+    "php": ">=7.4 <8.3",
     "ext-pdo": "*",
     "atk4/data": "dev-develop",
     "vlucas/valitron": "^1.4"
   },
   "require-release": {
-    "php": ">=7.4 <8.2",
+    "php": ">=7.4 <8.3",
     "atk4/data": "~3.1.0",
     "vlucas/valitron": "^1.4"
   },
