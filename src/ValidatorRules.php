@@ -72,7 +72,7 @@ class ValidatorRules
 
     public function isActivated(Model $model): bool
     {
-        $this->activateRule = $this->activateRule ?? self::SUCCESS;
+        $this->activateRule ??= self::SUCCESS;
 
         foreach ($this->activateConditions as $conditionField => $conditionValue) {
             if ($this->activateRule === self::SUCCESS && $model->get($conditionField) !== $conditionValue) {
