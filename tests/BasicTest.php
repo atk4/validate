@@ -248,7 +248,7 @@ class BasicTest extends TestCase
         $rule = new ValidatorRule('test', ['required']);
         $rule->setActivationConditionsSuccess([['type' => 'dog']]);
 
-        $this->expectExceptionMessage('Activation rule already set');
+        self::expectExceptionMessage('Activation rule already set');
 
         $rule->setActivationConditionsFail([['type' => 'dog']]);
     }
