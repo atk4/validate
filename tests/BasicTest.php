@@ -7,6 +7,7 @@ namespace Atk4\Validate\Tests;
 use Atk4\Data\Model;
 use Atk4\Data\Schema\TestCase;
 use Atk4\Validate\Validator;
+use Atk4\Validate\ValidatorRule;
 
 class BasicTest extends TestCase
 {
@@ -240,5 +241,15 @@ class BasicTest extends TestCase
 
         // will not raise exception for return an empty array in place of null
         $entity->save();
+    }
+
+    public function testExceptionIfRule(): void
+    {
+        $rule = new ValidatorRule('test', ['required']);
+        $rule->setActivationConditionsSuccess([['type' => 'dog']]);
+
+        $this->expectExceptionMessage('Activation rule already set');
+
+        $rule->setActivationConditionsFail([['type' => 'dog']]);
     }
 }
