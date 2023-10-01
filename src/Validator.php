@@ -19,7 +19,7 @@ class Validator
     use WarnDynamicPropertyTrait;
 
     /**
-     * @var ValidatorRules[]
+     * @var ValidatorRule[]
      */
     public array $rules = [];
 
@@ -38,13 +38,13 @@ class Validator
     public function rule(string $field, array $rules): self
     {
         foreach ($rules as $rule) {
-            $this->addValidationRules(new ValidatorRules($field, $rule));
+            $this->addValidationRules(new ValidatorRule($field, $rule));
         }
 
         return $this;
     }
 
-    public function addValidationRules(ValidatorRules $validationRules): void
+    public function addValidationRules(ValidatorRule $validationRules): void
     {
         $this->rules[] = $validationRules;
     }
@@ -78,7 +78,7 @@ class Validator
     {
         foreach ($then_hash as $field => $rules) {
             foreach ($rules as $rule) {
-                $validatorRules = new ValidatorRules($field, $rule);
+                $validatorRules = new ValidatorRule($field, $rule);
                 $validatorRules->setActivationConditionsSuccess($conditions);
                 $this->addValidationRules($validatorRules);
             }
@@ -86,7 +86,7 @@ class Validator
 
         foreach ($else_hash as $field => $rules) {
             foreach ($rules as $rule) {
-                $validatorRules = new ValidatorRules($field, $rule);
+                $validatorRules = new ValidatorRule($field, $rule);
                 $validatorRules->setActivationConditionsFail($conditions);
                 $this->addValidationRules($validatorRules);
             }
@@ -110,7 +110,7 @@ class Validator
             if ($rule->isActivated($model) === false) {
                 continue;
             }
-            $rules[$rule->field][] = $rule->rule->getRule();
+            $rules[$rule->field][] = $rule->getValitronRule();
         }
 
         // set up Valitron rules
