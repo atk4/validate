@@ -29,18 +29,26 @@ class Validator
      *          ['lengthBetween', 4, 10, 'message'=>'test 2'],
      *      ],
      *  ];.
+     *
+     * @var array<string,array<string|array<string|int|callable>>>
      */
     public array $rules = [];
 
     /**
      * Array of conditional rules in following format:
      *  [
-     *      [$conditions, $then_rules, $else_rules],
+     *      [
+     *          $conditions, // array of conditions
+     *          $then_rules, // array in $this->rules format which will be used if conditions are met
+     *          $else_rules  // array in $this->rules format which will be used if conditions are not met
+     *      ],
      *  ].
      *
-     * $conditions - array of conditions
-     * $then_rules - array in $this->rules format which will be used if conditions are met
-     * $else_rules - array in $this->rules format which will be used if conditions are not met
+     * @var array{
+     *     array<string,string>,
+     *     array<string,array<string|array<string|int|callable>>>,
+     *     array<string,array<string|array<string|int|callable>>>
+     * }
      */
     public array $if_rules = [];
 
@@ -52,13 +60,15 @@ class Validator
     /**
      * Set one rule.
      *
+     * @param array<string|array<string|int|callable>> $rules
+     *
      * @return $this
      */
     public function rule(string $field, array $rules): self
     {
         $this->rules[$field] = array_merge(
             $this->rules[$field] ?? [],
-            $this->_normalizeRules($rules)
+            $rules
         );
 
         return $this;
@@ -67,7 +77,7 @@ class Validator
     /**
      * Set multiple rules.
      *
-     * @param array<string, array> $hash array with field name as key and rules as value
+     * @param array<string, array<string|array<string|int|callable>>> $hash array with field name as key and rules as value
      *
      * @return $this
      */
@@ -83,38 +93,27 @@ class Validator
     /**
      * Set conditional rules.
      *
+     * @param array<string, int|string>                               $conditions
+     * @param array<string, array<string|array<string|int|callable>>> $then_hash
+     * @param array<string, array<string|array<string|int|callable>>> $else_hash
+     *
      * @return $this
      */
     public function if(array $conditions, array $then_hash, array $else_hash = []): self
     {
         $this->if_rules[] = [
             $conditions,
-            $this->_normalizeRules($then_hash),
-            $this->_normalizeRules($else_hash),
+            $then_hash,
+            $else_hash,
         ];
 
         return $this;
     }
 
     /**
-     * Normalize rule-set.
-     *
-     * @param array|string|callable $rules
-     *
-     * @return array or arrays
-     */
-    protected function _normalizeRules($rules): array
-    {
-        $rules = (array) $rules;
-        foreach ($rules as $key => $rule) {
-            $rules[$key] = (array) $rule;
-        }
-
-        return $rules;
-    }
-
-    /**
      * Runs all validations and return an array with validation errors.
+     *
+     * @return array<string, string> array of errors in format: [field_name => error_message]
      */
     public function validate(Model $model, string $intent = null): array
     {

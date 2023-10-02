@@ -47,7 +47,7 @@ class BasicTest extends TestCase
         $validator->rule('name', ['required', ['lengthMin', 3]]);
 
         $err = $model->createEntity()->set('name', 'a')->validate();
-        $this->assertSame(['name'], array_keys($err));
+        self::assertSame(['name'], array_keys($err));
     }
 
     /**
@@ -61,7 +61,7 @@ class BasicTest extends TestCase
         $validator->rule('name', ['required', ['lengthMin', 3]]);
 
         $err = $model->createEntity()->set('name', 'a')->validate();
-        $this->assertSame(['name'], array_keys($err));
+        self::assertSame(['name'], array_keys($err));
     }
 
     /**
@@ -84,7 +84,7 @@ class BasicTest extends TestCase
             'tail_length' => 5.45,
         ])->validate();
 
-        $this->assertSame(['name', 'tail_length'], array_keys($err));
+        self::assertSame(['name', 'tail_length'], array_keys($err));
     }
 
     /**
@@ -98,7 +98,7 @@ class BasicTest extends TestCase
         // Age should be odd (nepāra skaitlis)
         $validator->rule('age', [
             [
-                function ($field, $value, $params, $data) {
+                static function ($field, $value, $params, $data) {
                     return $value % 2 !== 0;
                 },
                 'message' => 'Age should be odd',
@@ -109,7 +109,7 @@ class BasicTest extends TestCase
             'age' => 10, // odd number, so should throw error
         ])->validate();
 
-        $this->assertSame(['age' => 'Age should be odd'], $err); // error and custom message
+        self::assertSame(['age' => 'Age should be odd'], $err); // error and custom message
     }
 
     /**
@@ -133,21 +133,21 @@ class BasicTest extends TestCase
         $err = $model->createEntity()->setMulti([
             'type' => 'ball',
         ])->validate();
-        $this->assertSame([], array_keys($err));
+        self::assertSame([], array_keys($err));
 
         // ball should not have tail_length
         $err = $model->createEntity()->setMulti([
             'type' => 'ball',
             'tail_length' => 5,
         ])->validate();
-        $this->assertSame(['tail_length'], array_keys($err));
+        self::assertSame(['tail_length'], array_keys($err));
 
         // dogs require age and tail_length
         $err = $model->createEntity()->setMulti([
             'type' => 'dog',
             'tail_length' => 5, // age is not set
         ])->validate();
-        $this->assertSame(['age'], array_keys($err));
+        self::assertSame(['age'], array_keys($err));
     }
 
     /**
@@ -167,36 +167,36 @@ class BasicTest extends TestCase
         $err = $model->createEntity()->setMulti([
             'type' => 'ball',
         ])->validate();
-        $this->assertSame([], array_keys($err)); // age can be blank for balls
+        self::assertSame([], array_keys($err)); // age can be blank for balls
 
         $err = $model->createEntity()->setMulti([
             'type' => 'ball',
             'age' => 2,
         ])->validate();
-        $this->assertSame(['age'], array_keys($err)); // age must be at least 3 for everything if set
+        self::assertSame(['age'], array_keys($err)); // age must be at least 3 for everything if set
 
         $err = $model->createEntity()->setMulti([
             'type' => 'dog',
         ])->validate();
-        $this->assertSame(['age'], array_keys($err)); // for dogs age is required
+        self::assertSame(['age'], array_keys($err)); // for dogs age is required
 
         $err = $model->createEntity()->setMulti([
             'type' => 'dog',
             'age' => 10,
         ])->validate();
-        $this->assertSame([], array_keys($err)); // for dogs age 10 is ok
+        self::assertSame([], array_keys($err)); // for dogs age 10 is ok
 
         $err = $model->createEntity()->setMulti([
             'type' => 'dog',
             'age' => 2,
         ])->validate();
-        $this->assertSame(['age'], array_keys($err)); // for dogs also age should be at least 3
+        self::assertSame(['age'], array_keys($err)); // for dogs also age should be at least 3
 
         $err = $model->createEntity()->setMulti([
             'type' => 'dog',
             'age' => 30,
         ])->validate();
-        $this->assertSame(['age'], array_keys($err)); // for dogs age should be no more than 20
+        self::assertSame(['age'], array_keys($err)); // for dogs age should be no more than 20
     }
 
     /**
@@ -215,12 +215,12 @@ class BasicTest extends TestCase
         $err = $model->createEntity()->setMulti([
             'age' => 2,
         ])->validate();
-        $this->assertSame(['age' => 'Common! Age to small'], $err); // custom message here
+        self::assertSame(['age' => 'Common! Age to small'], $err); // custom message here
 
         $err = $model->createEntity()->setMulti([
             'age' => 10,
         ])->validate();
-        $this->assertSame(['age' => 'And now to big'], $err); // custom message here
+        self::assertSame(['age' => 'And now to big'], $err); // custom message here
     }
 
     public function testModelHookValidate(): void
@@ -236,7 +236,7 @@ class BasicTest extends TestCase
         ]);
 
         $err = $entity->validate();
-        $this->assertSame([], $err);
+        self::assertSame([], $err);
 
         // will not raise exception for return an empty array in place of null
         $entity->save();
