@@ -12,7 +12,6 @@ local
 cache
 *.cache
 *.cache.*
-*.cmd
 
 /phpunit.xml
 /phpunit-*.xml
