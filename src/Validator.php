@@ -30,7 +30,7 @@ class Validator
      *      ],
      *  ];.
      *
-     * @var array<string,array<string|array<string|int|callable>>>
+     * @var array<string, array<string|array<string|int|callable>>>
      */
     public array $rules = [];
 
@@ -44,11 +44,13 @@ class Validator
      *      ],
      *  ].
      *
-     * @var array{
-     *     array<string,string>,
-     *     array<string,array<string|array<string|int|callable>>>,
-     *     array<string,array<string|array<string|int|callable>>>
-     * }
+     * @var list<
+     *          array{
+     *              array<string, string>,
+     *              array<string, array<string|array<string|int|callable>>>,
+     *              array<string, array<string|array<string|int|callable>>>
+     *          }
+     *  >
      */
     public array $if_rules = [];
 
