@@ -30,7 +30,7 @@ class Validator
      *      ],
      *  ];.
      *
-     * @var array<string, array<string|array<string|int|callable>>>
+     * @var array<string, array<string|array<string|int|\Closure(string, mixed, list<mixed>, list<mixed>): bool>>>
      */
     public array $rules = [];
 
@@ -47,8 +47,8 @@ class Validator
      * @var list<
      *          array{
      *              array<string, string>,
-     *              array<string, array<string|array<string|int|callable>>>,
-     *              array<string, array<string|array<string|int|callable>>>
+     *              array<string, array<string|array<string|int|\Closure(string, mixed, list<mixed>, list<mixed>): bool>>>,
+     *              array<string, array<string|array<string|int|\Closure(string, mixed, list<mixed>, list<mixed>): bool>>>
      *          }
      *  >
      */
@@ -62,7 +62,7 @@ class Validator
     /**
      * Set one rule.
      *
-     * @param array<string|array<string|int|callable>> $rules
+     * @param array<string|array<string|int|\Closure(string, mixed, list<mixed>, list<mixed>): bool>> $rules
      *
      * @return $this
      */
@@ -79,7 +79,7 @@ class Validator
     /**
      * Set multiple rules.
      *
-     * @param array<string, array<string|array<string|int|callable>>> $hash array with field name as key and rules as value
+     * @param array<string, array<string|array<string|int|\Closure(string, mixed, list<mixed>, list<mixed>): bool>>> $hash array with field name as key and rules as value
      *
      * @return $this
      */
@@ -95,9 +95,9 @@ class Validator
     /**
      * Set conditional rules.
      *
-     * @param array<string, int|string>                               $conditions
-     * @param array<string, array<string|array<string|int|callable>>> $then_hash
-     * @param array<string, array<string|array<string|int|callable>>> $else_hash
+     * @param array<string, int|string>                                                                              $conditions
+     * @param array<string, array<string|array<string|int|\Closure(string, mixed, list<mixed>, list<mixed>): bool>>> $then_hash
+     * @param array<string, array<string|array<string|int|\Closure(string, mixed, list<mixed>, list<mixed>): bool>>> $else_hash
      *
      * @return $this
      */
