@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Atk4\Validate\Tests;
+namespace Atk4\Validate\Tests\Model;
 
 use Atk4\Data\Model;
 

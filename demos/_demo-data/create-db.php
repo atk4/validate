@@ -6,7 +6,7 @@ namespace Atk4\Validate\Demos;
 
 use Atk4\Data\Persistence;
 use Atk4\Data\Schema\Migrator;
-use Atk4\Validate\Tests\ModelTest;
+use Atk4\Validate\Tests\Model\ModelTest;
 
 require_once __DIR__ . '/../init-autoloader.php';
 
