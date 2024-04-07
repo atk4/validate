@@ -15,16 +15,16 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['8.2']
+        php: ['latest']
         type: ['Phpunit']
         include:
-          - php: '8.2'
+          - php: 'latest'
             type: 'CodingStyle'
-          - php: '8.2'
+          - php: 'latest'
             type: 'StaticAnalysis'
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Configure PHP
         run: |
@@ -37,7 +37,7 @@ jobs:
           echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Setup cache 2/2
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-smoke-${{ matrix.php }}-${{ matrix.type }}-${{ hashFiles('composer.json') }}
@@ -79,10 +79,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: ['7.4', '8.0', '8.1', '8.2']
+        php: ['7.4', '8.0', '8.1', '8.2', '8.3']
         type: ['Phpunit', 'Phpunit Lowest']
         include:
-          - php: '8.2'
+          - php: 'latest'
             type: 'Phpunit Burn'
     env:
       LOG_COVERAGE: "${{ fromJSON('{true: \"1\", false: \"\"}')[matrix.php == '8.2' && matrix.type == 'Phpunit' && (github.event_name == 'pull_request' || (github.event_name == 'push' && (github.ref == 'refs/heads/develop' || github.ref == 'refs/heads/master')))] }}"
@@ -111,7 +111,7 @@ jobs:
           ORACLE_PASSWORD: atk4_pass
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Configure PHP
         run: |
@@ -124,7 +124,7 @@ jobs:
           echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Setup cache 2/2
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ matrix.type }}-${{ hashFiles('composer.json') }}
