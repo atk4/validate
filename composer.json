@@ -32,7 +32,7 @@
   "require": {
     "php": ">=7.4 <8.3",
     "ext-pdo": "*",
-    "atk4/data": "~4.0.0",
+    "atk4/data": "dev-develop",
     "vlucas/valitron": "^1.4"
   },
   "require-release": {
