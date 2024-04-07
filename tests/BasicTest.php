@@ -6,8 +6,8 @@ namespace Atk4\Validate\Tests;
 
 use Atk4\Data\Model;
 use Atk4\Data\Schema\TestCase;
-use Atk4\Validate\Validator;
 use Atk4\Validate\Tests\Model\ModelTest;
+use Atk4\Validate\Validator;
 
 class BasicTest extends TestCase
 {
