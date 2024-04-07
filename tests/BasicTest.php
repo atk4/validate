@@ -11,6 +11,7 @@ use Atk4\Validate\Tests\Model\ModelTest;
 
 class BasicTest extends TestCase
 {
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
@@ -27,7 +28,7 @@ class BasicTest extends TestCase
         ]);
     }
 
-    protected function createModel(): Model
+    protected function createModel(): ModelTest
     {
         return new ModelTest($this->db);
     }

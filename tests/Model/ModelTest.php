@@ -10,6 +10,7 @@ class ModelTest extends Model
 {
     public $table = 'validator_test';
 
+    #[\Override]
     protected function init(): void
     {
         parent::init();
