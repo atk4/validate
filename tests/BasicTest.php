@@ -17,7 +17,7 @@ class BasicTest extends TestCase
         parent::setUp();
 
         $this->setDb([
-            'validator_test' => [
+            'validator_dummy' => [
                 1 => [
                     'name' => 'John',
                     'age' => 22,
