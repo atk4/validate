@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Atk4\Validate\Tests;
 
-class ModelTest extends \Atk4\Data\Model
+use Atk4\Data\Model;
+
+class ModelTest extends Model
 {
     public $table = 'validator_test';
 

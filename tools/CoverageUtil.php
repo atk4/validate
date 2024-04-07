@@ -20,7 +20,7 @@ final class CoverageUtil
     public static function start(): void
     {
         if (self::$coverage !== null) {
-            throw new \Error('Coverage already started');
+            throw new Error('Coverage already started');
         }
 
         $filter = new Filter();
