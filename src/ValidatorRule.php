@@ -98,7 +98,7 @@ class ValidatorRule
         $this->rule = $rule;
     }
 
-    private function setMessage(string $message = null): void
+    private function setMessage(?string $message = null): void
     {
         $this->message = $message;
     }
