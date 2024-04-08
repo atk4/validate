@@ -19,7 +19,7 @@ class Validator
     use WarnDynamicPropertyTrait;
 
     /**
-     * @var ValidatorRule[]
+     * @var list<ValidatorRule>
      */
     public array $rules = [];
 
@@ -31,7 +31,7 @@ class Validator
     /**
      * Set one rule.
      *
-     * @param array<string|array<string|int|string[]|callable>> $rules
+     * @param array<string|array<string|int|string[]|\Closure(string, mixed, list<mixed>, list<mixed>): bool>> $rules
      *
      * @return $this
      */
@@ -52,7 +52,7 @@ class Validator
     /**
      * Set multiple rules.
      *
-     * @param array<string, array<string|array<string|int|string[]|callable>>> $hash array with field name as key and rules as value
+     * @param array<string, list<string|array<string|int|string[]|\Closure(string, mixed, list<mixed>, list<mixed>): bool>>> $hash array with field name as key and rules as value
      *
      * @return $this
      */
@@ -68,9 +68,9 @@ class Validator
     /**
      * Set conditional rules.
      *
-     * @param array<string, string|int|bool>|array<array<string, string|int|bool>>    $conditions
-     * @param array<string, string|array<string|array<string|int|string[]|callable>>> $then_hash
-     * @param array<string, string|array<string|array<string|int|string[]|callable>>> $else_hash
+     * @param array<string, mixed>|list<array<string, mixed>>                                                                       $conditions
+     * @param array<string, string|list<string|array<string|int|string[]|\Closure(string, mixed, list<mixed>, list<mixed>): bool>>> $then_hash
+     * @param array<string, string|list<string|array<string|int|string[]|\Closure(string, mixed, list<mixed>, list<mixed>): bool>>> $else_hash
      *
      * @return $this
      */
@@ -100,7 +100,7 @@ class Validator
      *
      * @return array<string, string> array of errors in format: [field_name => error_message]
      */
-    public function validate(Model $model, ?string $intent = null): array
+    public function validate(Model $model): array
     {
         // initialize Validator, set data
         $v = new \Valitron\Validator($model->get());

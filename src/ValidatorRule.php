@@ -14,19 +14,19 @@ class ValidatorRule
     public string $field;
 
     /**
-     * @var array<array<string, string|int|bool>>
+     * @var array<string, string|int|bool>
      */
     public array $activateConditions = [];
     public ?string $activateRule = null;
 
     /**
-     * @var array<string|int|string[]|callable>
+     * @var list<string|int|string[]|\Closure(string, mixed, list<mixed>, list<mixed>): bool>
      */
     private array $rule = [];
     private ?string $message = null;
 
     /**
-     * @param string|array<string|int|string[]|callable> $rule
+     * @param string|array<string|int|string[]|\Closure(string, mixed, list<mixed>, list<mixed>): bool> $rule
      */
     public function __construct(string $field, $rule)
     {
@@ -35,42 +35,43 @@ class ValidatorRule
         }
 
         $this->field = $field;
+
         $message = $rule['message'] ?? null;
-
-        $this->setRule($rule);
-
         if (isset($rule['message'])) {
             unset($rule['message']);
         }
 
+        $this->setRule($rule);
         $this->setMessage($message);
     }
 
     /**
-     * @param array<array<string, string|int|bool>> $activationConditions
+     * @param array<string, mixed> $activationConditions [field_name => value]
      */
     public function setActivationConditionsSuccess(array $activationConditions): void
     {
-        $this->setActivateOnResult(self::SUCCESS);
-        $this->activateConditions = $activationConditions;
+        $this->setActivateOnResult(self::SUCCESS, $activationConditions);
     }
 
     /**
-     * @param array<array<string, string|int|bool>> $activationConditions
+     * @param array<string, mixed> $activationConditions [field_name => value]
      */
     public function setActivationConditionsFail(array $activationConditions): void
     {
-        $this->setActivateOnResult(self::FAIL);
-        $this->activateConditions = $activationConditions;
+        $this->setActivateOnResult(self::FAIL, $activationConditions);
     }
 
-    private function setActivateOnResult(string $activateRule): void
+    /**
+     * @param array<string, mixed> $activationConditions [field_name => value]
+     */
+    private function setActivateOnResult(string $activateRule, array $activationConditions): void
     {
         if ($this->activateRule !== null) {
             throw new Exception('Activation rule already set');
         }
 
         $this->activateRule = $activateRule;
+        $this->activateConditions = $activationConditions;
     }
 
     public function isActivated(Model $model): bool
@@ -91,7 +92,7 @@ class ValidatorRule
     }
 
     /**
-     * @param array<string|int|string[]|callable> $rule
+     * @param array<string|int|string[]|\Closure(string, mixed, list<mixed>, list<mixed>): bool> $rule
      */
     private function setRule(array $rule): void
     {
@@ -104,7 +105,7 @@ class ValidatorRule
     }
 
     /**
-     * @return array<string|int|string[]|callable>
+     * @return array<string|int|string[]|\Closure(string, mixed, list<mixed>, list<mixed>): bool>
      */
     public function getRule(): array
     {
@@ -117,7 +118,7 @@ class ValidatorRule
     }
 
     /**
-     * @return array<string|array<string|int|string[]|callable>>
+     * @return array<string|array<string|int|string[]|\Closure(string, mixed, list<mixed>, list<mixed>): bool>>
      */
     public function getValitronRule(): array
     {
