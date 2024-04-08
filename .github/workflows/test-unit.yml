@@ -203,10 +203,10 @@ jobs:
           php -d opcache.enable_cli=1 vendor/bin/phpunit --exclude-group none $(if [ -n "$LOG_COVERAGE" ]; then echo --coverage-text; else echo --no-coverage; fi) --fail-on-warning --fail-on-risky $(if vendor/bin/phpunit --version | grep -q '^PHPUnit 9\.'; then echo -v; else echo --fail-on-notice --fail-on-deprecation --display-notices --display-deprecations --display-warnings --display-errors --display-incomplete --display-skipped; fi)
           if [ -n "$LOG_COVERAGE" ]; then mv coverage/phpunit.cov coverage/phpunit-mssql.cov; fi
 
-      - name: "Run tests: Oracle (only for cron)"
+      - name: "Run tests: Oracle - PDO (only for coverage or cron)"
         if: (success() || failure()) && github.event_name == 'schedule'
         env:
-          DB_DSN: "oci:dbname=oracle/xe"
+          DB_DSN: "pdo_oci:dbname=oracle/free"
           DB_USER: system
           DB_PASSWORD: atk4_pass
           NLS_LANG: AMERICAN_AMERICA.AL32UTF8
@@ -214,7 +214,7 @@ jobs:
           sed -E "s~(\\\$db = new.+Persistence\\\\Sql)\(.+\);~\\1('$DB_DSN', '$DB_USER', '$DB_PASSWORD');~g" -i demos/db.default.php
           php demos/_demo-data/create-db.php
           php -d opcache.enable_cli=1 vendor/bin/phpunit --exclude-group none $(if [ -n "$LOG_COVERAGE" ]; then echo --coverage-text; else echo --no-coverage; fi) --fail-on-warning --fail-on-risky $(if vendor/bin/phpunit --version | grep -q '^PHPUnit 9\.'; then echo -v; else echo --fail-on-notice --fail-on-deprecation --display-notices --display-deprecations --display-warnings --display-errors --display-incomplete --display-skipped; fi)
-          if [ -n "$LOG_COVERAGE" ]; then mv coverage/phpunit.cov coverage/phpunit-oracle.cov; fi
+          if [ -n "$LOG_COVERAGE" ]; then mv coverage/phpunit.cov coverage/phpunit-oracle-pdo.cov; fi
 
       - name: Upload coverage logs 1/2 (only for latest Phpunit)
         if: env.LOG_COVERAGE
