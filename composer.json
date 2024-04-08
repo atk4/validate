@@ -32,7 +32,7 @@
   "homepage": "https://github.com/atk4/validate",
   "require": {
     "php": ">=7.4 <8.4",
-    "atk4/data": "~5.0.0",
+    "atk4/data": "dev-develop",
     "vlucas/valitron": "^1.4"
   },
   "require-release": {
