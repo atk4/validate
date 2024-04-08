@@ -6,17 +6,19 @@ namespace Atk4\Validate\Tests;
 
 use Atk4\Data\Model;
 use Atk4\Data\Schema\TestCase;
+use Atk4\Validate\Tests\Model\Dummy;
 use Atk4\Validate\Validator;
 use Atk4\Validate\ValidatorRule;
 
 class BasicTest extends TestCase
 {
+    #[\Override]
     protected function setUp(): void
     {
         parent::setUp();
 
         $this->setDb([
-            'validator_test' => [
+            'validator_dummy' => [
                 1 => [
                     'name' => 'John',
                     'age' => 22,
@@ -29,7 +31,7 @@ class BasicTest extends TestCase
 
     protected function createModel(): Model
     {
-        return new ModelTest($this->db);
+        return new Dummy($this->db);
     }
 
     protected function createValidator(Model $model): Validator

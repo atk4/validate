@@ -98,9 +98,9 @@ class Validator
     /**
      * Runs all validations and return an array with validation errors.
      *
-     * @return array<string, string> array with field name as key and error message as value
+     * @return array<string, string> array of errors in format: [field_name => error_message]
      */
-    public function validate(Model $model, string $intent = null): array
+    public function validate(Model $model, ?string $intent = null): array
     {
         // initialize Validator, set data
         $v = new \Valitron\Validator($model->get());
