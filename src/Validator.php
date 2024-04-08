@@ -117,7 +117,7 @@ class Validator
      *
      * @return array<string, string> array of errors in format: [field_name => error_message]
      */
-    public function validate(Model $model, string $intent = null): array
+    public function validate(Model $model, ?string $intent = null): array
     {
         // initialize Validator, set data
         $v = new \Valitron\Validator($model->get());

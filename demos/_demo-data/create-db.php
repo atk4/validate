@@ -6,7 +6,7 @@ namespace Atk4\Validate\Demos;
 
 use Atk4\Data\Persistence;
 use Atk4\Data\Schema\Migrator;
-use Atk4\Validate\Tests\ModelTest;
+use Atk4\Validate\Tests\Model\Dummy;
 
 require_once __DIR__ . '/../init-autoloader.php';
 
@@ -25,6 +25,6 @@ if (getenv('GITHUB_JOB') === 'unit-test') {
     return;
 }
 
-(new Migrator(new ModelTest($db)))->create();
+(new Migrator(new Dummy($db)))->create();
 
 echo "import complete!\n\n";

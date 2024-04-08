@@ -1,23 +1,26 @@
-<phpunit bootstrap="vendor/autoload.php" printerClass="Atk4\Core\Phpunit\ResultPrinter" colors="true">
-  <php>
-    <env name="DB_DSN" value="sqlite::memory:" />
-    <env name="DB_USER" value="" />
-    <env name="DB_PASSWORD" value="" />
-  </php>
-  <testsuites>
-    <testsuite name="tests">
-      <directory>tests</directory>
-    </testsuite>
-  </testsuites>
-  <listeners>
-    <listener class="JohnKary\PHPUnit\Listener\SpeedTrapListener" />
-  </listeners>
-  <coverage>
-    <include>
-      <directory suffix=".php">src</directory>
-    </include>
-    <report>
-      <php outputFile="coverage/phpunit.cov" />
-    </report>
-  </coverage>
+<phpunit bootstrap="vendor/autoload.php" colors="true">
+    <php>
+        <env name="DB_DSN" value="sqlite::memory:" />
+        <env name="DB_USER" value="" />
+        <env name="DB_PASSWORD" value="" />
+    </php>
+    <testsuites>
+        <testsuite name="tests">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+    <extensions>
+        <bootstrap class="Ergebnis\PHPUnit\SlowTestDetector\Extension" />
+    </extensions>
+    <source>
+        <include>
+            <directory>src</directory>
+            <directory>tests</directory>
+        </include>
+    </source>
+    <coverage>
+        <report>
+            <php outputFile="coverage/phpunit.cov" />
+        </report>
+    </coverage>
 </phpunit>
