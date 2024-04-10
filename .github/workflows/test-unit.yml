@@ -109,6 +109,11 @@ jobs:
         image: gvenzl/oracle-xe:18-slim-faststart
         env:
           ORACLE_PASSWORD: atk4_pass
+        options: >-
+          --health-cmd healthcheck.sh
+          --health-interval 20s
+          --health-timeout 10s
+          --health-retries 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
