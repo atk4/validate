@@ -25,7 +25,6 @@ if (getenv('GITHUB_JOB') !== false && strpos(getenv('GITHUB_JOB'), 'unit-') === 
     return;
 }
 
-$migr = new Migrator(new Dummy($db));
-$migr->dropIfExists()->create();
+(new Migrator(new Dummy($db)))->create();
 
 echo "import complete!\n\n";
