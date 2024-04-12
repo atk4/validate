@@ -255,9 +255,9 @@ class BasicTest extends TestCase
     public function testExceptionIfRule(): void
     {
         $rule = new ValidatorRule('test', ['required']);
-        $rule->setActivationConditionsSuccess(['type' => 'dog']); // if type=dog, then check if field "test" is set
+        $rule->setActivateOnSuccess(['type' => 'dog']); // if type=dog, then check if field "test" is set
 
-        self::expectExceptionMessage('Activation rule already set');
-        $rule->setActivationConditionsFail(['type' => 'dog']); // should not try to set another condition on same rule
+        self::expectExceptionMessage('Activation condition already set');
+        $rule->setActivateOnFail(['type' => 'dog']); // should not try to set another condition on same rule
     }
 }

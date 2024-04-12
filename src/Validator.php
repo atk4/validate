@@ -29,7 +29,7 @@ class Validator
     }
 
     /**
-     * Set one rule.
+     * Set rules of particular field.
      *
      * @param array<string|array<string|int|string[]|\Closure(string, mixed, list<mixed>, list<mixed>): bool>> $rules
      *
@@ -38,15 +38,22 @@ class Validator
     public function rule(string $field, array $rules): self
     {
         foreach ($rules as $rule) {
-            $this->addValidationRules(new ValidatorRule($field, $rule));
+            $this->addValidatorRule(new ValidatorRule($field, $rule));
         }
 
         return $this;
     }
 
-    public function addValidationRules(ValidatorRule $validationRules): void
+    /**
+     * Set one rule.
+     *
+     * @return $this
+     */
+    public function addValidatorRule(ValidatorRule $validatorRule): self
     {
-        $this->rules[] = $validationRules;
+        $this->rules[] = $validatorRule;
+
+        return $this;
     }
 
     /**
@@ -78,17 +85,17 @@ class Validator
     {
         foreach ($then_hash as $field => $rules) {
             foreach ($rules as $rule) {
-                $validatorRules = new ValidatorRule($field, $rule);
-                $validatorRules->setActivationConditionsSuccess($conditions);
-                $this->addValidationRules($validatorRules);
+                $validatorRule = new ValidatorRule($field, $rule);
+                $validatorRule->setActivateOnSuccess($conditions);
+                $this->addValidatorRule($validatorRule);
             }
         }
 
         foreach ($else_hash as $field => $rules) {
             foreach ($rules as $rule) {
-                $validatorRules = new ValidatorRule($field, $rule);
-                $validatorRules->setActivationConditionsFail($conditions);
-                $this->addValidationRules($validatorRules);
+                $validatorRule = new ValidatorRule($field, $rule);
+                $validatorRule->setActivateOnFail($conditions);
+                $this->addValidatorRule($validatorRule);
             }
         }
 
@@ -107,10 +114,9 @@ class Validator
 
         $rules = [];
         foreach ($this->rules as $rule) {
-            if ($rule->isActivated($model) === false) {
-                continue;
+            if ($rule->isActivated($model) === true) {
+                $rules[$rule->field][] = $rule->getValitronRule();
             }
-            $rules[$rule->field][] = $rule->getValitronRule();
         }
 
         // set up Valitron rules

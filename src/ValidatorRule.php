@@ -9,15 +9,15 @@ use Atk4\Data\Model;
 
 class ValidatorRule
 {
-    public const SUCCESS = 'success';
-    public const FAIL = 'fail';
+    public const ON_SUCCESS = 'success';
+    public const ON_FAIL = 'fail';
     public string $field;
 
     /**
-     * @var array<string, string|int|bool>
+     * @var array<string, mixed>
      */
     public array $activateConditions = [];
-    public ?string $activateRule = null;
+    public ?string $activateOn = null;
 
     /**
      * @var list<string|int|string[]|\Closure(string, mixed, list<mixed>, list<mixed>): bool>
@@ -48,42 +48,42 @@ class ValidatorRule
     /**
      * @param array<string, mixed> $activationConditions [field_name => value]
      */
-    public function setActivationConditionsSuccess(array $activationConditions): void
+    public function setActivateOnSuccess(array $activationConditions): void
     {
-        $this->setActivateOnResult(self::SUCCESS, $activationConditions);
+        $this->setActivateOnResult(self::ON_SUCCESS, $activationConditions);
     }
 
     /**
      * @param array<string, mixed> $activationConditions [field_name => value]
      */
-    public function setActivationConditionsFail(array $activationConditions): void
+    public function setActivateOnFail(array $activationConditions): void
     {
-        $this->setActivateOnResult(self::FAIL, $activationConditions);
+        $this->setActivateOnResult(self::ON_FAIL, $activationConditions);
     }
 
     /**
      * @param array<string, mixed> $activationConditions [field_name => value]
      */
-    private function setActivateOnResult(string $activateRule, array $activationConditions): void
+    private function setActivateOnResult(string $activateOn, array $activationConditions): void
     {
-        if ($this->activateRule !== null) {
-            throw new Exception('Activation rule already set');
+        if ($this->activateOn !== null) {
+            throw new Exception('Activation condition already set');
         }
 
-        $this->activateRule = $activateRule;
+        $this->activateOn = $activateOn;
         $this->activateConditions = $activationConditions;
     }
 
     public function isActivated(Model $model): bool
     {
-        $this->activateRule ??= self::SUCCESS;
+        $this->activateOn ??= self::ON_SUCCESS;
 
         foreach ($this->activateConditions as $conditionField => $conditionValue) {
-            if ($this->activateRule === self::SUCCESS && $model->get($conditionField) !== $conditionValue) {
+            if ($this->activateOn === self::ON_SUCCESS && $model->get($conditionField) !== $conditionValue) {
                 return false;
             }
 
-            if ($this->activateRule === self::FAIL && $model->get($conditionField) === $conditionValue) {
+            if ($this->activateOn === self::ON_FAIL && $model->get($conditionField) === $conditionValue) {
                 return false;
             }
         }
