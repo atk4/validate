@@ -63,7 +63,7 @@ class BasicTest extends TestCase
 
         $validator->rule('name', ['required', ['lengthMin', 3]]);
 
-        $err = $model->createEntity()->set('name', 'a')->validate();
+        $err = $model->createEntity()->setNull('name')->validate();
         self::assertSame(['name'], array_keys($err));
     }
 
@@ -98,10 +98,10 @@ class BasicTest extends TestCase
         $model = $this->createModel();
         $validator = $this->createValidator($model);
 
-        // Age should be odd (nepāra skaitlis)
+        // Age should be odd number
         $validator->rule('age', [
             [
-                static function ($field, $value, $params, $data) {
+                static function (string $field, $value, array $params, array $data): bool {
                     return $value % 2 !== 0;
                 },
                 'message' => 'Age should be odd',
@@ -193,7 +193,7 @@ class BasicTest extends TestCase
             'type' => 'dog',
             'age' => 2,
         ])->validate();
-        self::assertSame(['age'], array_keys($err)); // for dogs also age should be at least 3
+        self::assertSame(['age'], array_keys($err)); // for dogs age should be at least 3
 
         $err = $model->createEntity()->setMulti([
             'type' => 'dog',
@@ -230,7 +230,7 @@ class BasicTest extends TestCase
     {
         $model = $this->createModel();
         $validator = $this->createValidator($model);
-        $validator->rule('name', ['required', ['lengthMin', 3]]);
+        $validator->rule('name', ['required', ['lengthMin', 3, 'message' => 'Name to short']]);
 
         $entity = $model->createEntity();
         $entity->setMulti([
@@ -238,20 +238,27 @@ class BasicTest extends TestCase
             'type' => 'dog',
         ]);
 
-        $err = $entity->validate();
-        self::assertSame([], $err);
-
         // will not raise exception for return an empty array in place of null
+        $entity->save();
+        self::assertTrue(true);
+
+        $entity = $model->createEntity();
+        $entity->setMulti([
+            'name' => 'a',
+            'type' => 'dog',
+        ]);
+
+        // will raise exception because name to short
+        self::expectExceptionMessage('Name to short');
         $entity->save();
     }
 
     public function testExceptionIfRule(): void
     {
         $rule = new ValidatorRule('test', ['required']);
-        $rule->setActivationConditionsSuccess(['type' => 'dog']);
+        $rule->setActivationConditionsSuccess(['type' => 'dog']); // if type=dog, then check if field "test" is set
 
         self::expectExceptionMessage('Activation rule already set');
-
-        $rule->setActivationConditionsFail(['type' => 'dog']);
+        $rule->setActivationConditionsFail(['type' => 'dog']); // should not try to set another condition on same rule
     }
 }
