@@ -240,7 +240,6 @@ class BasicTest extends TestCase
 
         // will not raise exception for return an empty array in place of null
         $entity->save();
-        self::assertTrue(true);
 
         $entity = $model->createEntity();
         $entity->setMulti([
