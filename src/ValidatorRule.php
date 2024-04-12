@@ -64,7 +64,7 @@ class ValidatorRule
     /**
      * @param array<string, mixed> $activationConditions [field_name => value]
      */
-    private function setActivateOnResult(string $activateOn, array $activationConditions): void
+    public function setActivateOnResult(string $activateOn, array $activationConditions): void
     {
         if ($this->activateOn !== null) {
             throw new Exception('Activation condition already set');

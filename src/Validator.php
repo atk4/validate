@@ -32,13 +32,18 @@ class Validator
      * Set rules of particular field.
      *
      * @param array<string|array<string|int|string[]|\Closure(string, mixed, list<mixed>, list<mixed>): bool>> $rules
+     * @param array<string, mixed>|list<array<string, mixed>>                                                  $conditions
      *
      * @return $this
      */
-    public function rule(string $field, array $rules): self
+    public function rule(string $field, array $rules, ?string $activateOn = null, array $conditions = []): self
     {
         foreach ($rules as $rule) {
-            $this->addValidatorRule(new ValidatorRule($field, $rule));
+            $validatorRule = new ValidatorRule($field, $rule);
+            if ($activateOn !== null) {
+                $validatorRule->setActivateOnResult($activateOn, $conditions);
+            }
+            $this->addValidatorRule($validatorRule);
         }
 
         return $this;
@@ -84,19 +89,11 @@ class Validator
     public function if(array $conditions, array $then_hash, array $else_hash = []): self
     {
         foreach ($then_hash as $field => $rules) {
-            foreach ($rules as $rule) {
-                $validatorRule = new ValidatorRule($field, $rule);
-                $validatorRule->setActivateOnSuccess($conditions);
-                $this->addValidatorRule($validatorRule);
-            }
+            $this->rule($field, $rules, ValidatorRule::ON_SUCCESS, $conditions);
         }
 
         foreach ($else_hash as $field => $rules) {
-            foreach ($rules as $rule) {
-                $validatorRule = new ValidatorRule($field, $rule);
-                $validatorRule->setActivateOnFail($conditions);
-                $this->addValidatorRule($validatorRule);
-            }
+            $this->rule($field, $rules, ValidatorRule::ON_FAIL, $conditions);
         }
 
         return $this;
