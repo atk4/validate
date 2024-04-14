@@ -17,6 +17,7 @@ use Atk4\Data\Model;
  * https://github.com/vlucas/valitron/blob/v1.4.11/src/Valitron/Validator.php#L1251 https://github.com/phpstan/phpstan/issues/10874
  *
  * @phpstan-type ValidatorCallback \Closure(string, mixed, list<mixed>, list<mixed>): bool
+ * @phpstan-type ValidatorCondition array<string, mixed>
  *
  * https://github.com/vlucas/valitron/blob/master/src/Valitron/Validator.php#L1240 https://github.com/phpstan/phpstan/issues/10874
  * @phpstan-type ValitronRuleType 'accepted'|'alpha'|'alphaNum'|'array'|'arrayHasKeys'|'ascii'|'between'|'boolean'|'contains'|'containsUnique'|'creditCard'|'date'|'dateAfter'|'dateBefore'|'dateFormat'|'different'|'email'|'emailDNS'|'equals'|'in'|'instanceOf'|'integer'|'ip'|'ipv4'|'ipv6'|'length'|'lengthBetween'|'lengthMax'|'lengthMin'|'listContains'|'max'|'min'|'notIn'|'numeric'|'optional'|'regex'|'required'|'requiredWith'|'requiredWithout'|'slug'|'subset'|'url'|'urlActive'
@@ -39,8 +40,8 @@ class Validator
     /**
      * Add rule/rules for given field.
      *
-     * @param array<string|ValitronRule>                      $rules
-     * @param array<string, mixed>|list<array<string, mixed>> $conditions
+     * @param array<string|ValitronRule> $rules
+     * @param ValidatorCondition         $conditions
      *
      * @return $this
      */
@@ -88,7 +89,7 @@ class Validator
     /**
      * Set conditional rules.
      *
-     * @param array<string, mixed>|list<array<string, mixed>> $conditions
+     * @param ValidatorCondition                              $conditions
      * @param array<string, string|list<string|ValitronRule>> $then_hash
      * @param array<string, string|list<string|ValitronRule>> $else_hash
      *

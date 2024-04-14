@@ -11,6 +11,7 @@ use Atk4\Data\Model;
  * https://github.com/vlucas/valitron/blob/v1.4.11/src/Valitron/Validator.php#L1251.
  *
  * @phpstan-type ValidatorCallback \Closure(string, mixed, list<mixed>, list<mixed>): bool
+ * @phpstan-type ValidatorCondition array<string, mixed>
  *
  * https://github.com/vlucas/valitron/blob/master/src/Valitron/Validator.php#L1240
  * @phpstan-type ValitronRuleType 'accepted'|'alpha'|'alphaNum'|'array'|'arrayHasKeys'|'ascii'|'between'|'boolean'|'contains'|'containsUnique'|'creditCard'|'date'|'dateAfter'|'dateBefore'|'dateFormat'|'different'|'email'|'emailDNS'|'equals'|'in'|'instanceOf'|'integer'|'ip'|'ipv4'|'ipv6'|'length'|'lengthBetween'|'lengthMax'|'lengthMin'|'listContains'|'max'|'min'|'notIn'|'numeric'|'optional'|'regex'|'required'|'requiredWith'|'requiredWithout'|'slug'|'subset'|'url'|'urlActive'
@@ -23,7 +24,7 @@ class ValidatorRule
     public string $field;
 
     /**
-     * @var array<string, mixed>
+     * @var ValidatorCondition
      */
     public array $activateConditions = [];
     public ?string $activateOn = null;
@@ -55,7 +56,7 @@ class ValidatorRule
     }
 
     /**
-     * @param array<string, mixed> $activationConditions [field_name => value]
+     * @param ValidatorCondition $activationConditions [field_name => value]
      */
     public function setActivateOnSuccess(array $activationConditions): void
     {
@@ -63,7 +64,7 @@ class ValidatorRule
     }
 
     /**
-     * @param array<string, mixed> $activationConditions [field_name => value]
+     * @param ValidatorCondition $activationConditions [field_name => value]
      */
     public function setActivateOnFail(array $activationConditions): void
     {
@@ -71,7 +72,7 @@ class ValidatorRule
     }
 
     /**
-     * @param array<string, mixed> $activationConditions [field_name => value]
+     * @param ValidatorCondition $activationConditions [field_name => value]
      */
     public function setActivateOnResult(string $activateOn, array $activationConditions): void
     {
