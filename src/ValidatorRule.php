@@ -8,9 +8,7 @@ use Atk4\Data\Exception;
 use Atk4\Data\Model;
 
 /**
- * One validator rule.
- *
- * https://github.com/vlucas/valitron/blob/v1.4.11/src/Valitron/Validator.php#L1251
+ * https://github.com/vlucas/valitron/blob/v1.4.11/src/Valitron/Validator.php#L1251.
  *
  * @phpstan-type ValidatorCallback \Closure(string, mixed, list<mixed>, list<mixed>): bool
  *
