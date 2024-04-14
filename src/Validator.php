@@ -17,6 +17,10 @@ use Atk4\Data\Model;
  * https://github.com/vlucas/valitron/blob/v1.4.11/src/Valitron/Validator.php#L1251
  *
  * @phpstan-type ValidatorCallback \Closure(string, mixed, list<mixed>, list<mixed>): bool
+ *
+ * https://github.com/vlucas/valitron/blob/master/src/Valitron/Validator.php#L1240
+ * @phpstan-type ValitronRuleType 'required'|'equals'|'different'|'accepted'|'array'|'numeric'|'integer'|'length'|'lengthBetween'|'lengthMin'|'lengthMax'|'min'|'max'|'between'|'in'|'listContains'|'notIn'|'contains'|'subset'|'containsUnique'|'ip'|'ipv4'|'ipv6'|'email'|'ascii'|'emailDNS'|'url'|'urlActive'|'alpha'|'alphaNum'|'slug'|'regex'|'date'|'dateFormat'|'dateBefore'|'dateAfter'|'boolean'|'creditCard'|'instanceOf'|'requiredWith'|'requiredWithout'|'optional'|'arrayHasKeys'
+ * @phpstan-type ValitronRule array<int|'message', ValitronRuleType|int|string|string[]|ValidatorCallback>
  */
 class Validator
 {
@@ -35,8 +39,8 @@ class Validator
     /**
      * Set rules of particular field.
      *
-     * @param array<string|array<string|int|string[]|ValidatorCallback>> $rules
-     * @param array<string, mixed>|list<array<string, mixed>>            $conditions
+     * @param array<string|ValitronRule>                      $rules
+     * @param array<string, mixed>|list<array<string, mixed>> $conditions
      *
      * @return $this
      */
@@ -68,7 +72,7 @@ class Validator
     /**
      * Set multiple rules.
      *
-     * @param array<string, list<string|array<string|int|string[]|ValidatorCallback>>> $hash array with field name as key and rules as value
+     * @param array<string, list<string|ValitronRule>> $hash array with field name as key and rules as value
      *
      * @return $this
      */
@@ -84,9 +88,9 @@ class Validator
     /**
      * Set conditional rules.
      *
-     * @param array<string, mixed>|list<array<string, mixed>>                                 $conditions
-     * @param array<string, string|list<string|array<string|int|string[]|ValidatorCallback>>> $then_hash
-     * @param array<string, string|list<string|array<string|int|string[]|ValidatorCallback>>> $else_hash
+     * @param array<string, mixed>|list<array<string, mixed>> $conditions
+     * @param array<string, string|list<string|ValitronRule>> $then_hash
+     * @param array<string, string|list<string|ValitronRule>> $else_hash
      *
      * @return $this
      */

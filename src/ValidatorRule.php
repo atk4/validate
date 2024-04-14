@@ -13,6 +13,10 @@ use Atk4\Data\Model;
  * https://github.com/vlucas/valitron/blob/v1.4.11/src/Valitron/Validator.php#L1251
  *
  * @phpstan-type ValidatorCallback \Closure(string, mixed, list<mixed>, list<mixed>): bool
+ *
+ * https://github.com/vlucas/valitron/blob/master/src/Valitron/Validator.php#L1240
+ * @phpstan-type ValitronRuleType 'required'|'equals'|'different'|'accepted'|'array'|'numeric'|'integer'|'length'|'lengthBetween'|'lengthMin'|'lengthMax'|'min'|'max'|'between'|'in'|'listContains'|'notIn'|'contains'|'subset'|'containsUnique'|'ip'|'ipv4'|'ipv6'|'email'|'ascii'|'emailDNS'|'url'|'urlActive'|'alpha'|'alphaNum'|'slug'|'regex'|'date'|'dateFormat'|'dateBefore'|'dateAfter'|'boolean'|'creditCard'|'instanceOf'|'requiredWith'|'requiredWithout'|'optional'|'arrayHasKeys'
+ * @phpstan-type ValitronRule array<int|'message', ValitronRuleType|int|string|string[]|ValidatorCallback>
  */
 class ValidatorRule
 {
@@ -27,17 +31,17 @@ class ValidatorRule
     public ?string $activateOn = null;
 
     /**
-     * @var list<string|int|string[]|ValidatorCallback>
+     * @var list<ValitronRule>
      */
     private array $rule = [];
     private ?string $message = null;
 
     /**
-     * @param string|array<string|int|string[]|ValidatorCallback> $rule
+     * @param ValitronRuleType|ValitronRule|ValidatorCallback $rule
      */
     public function __construct(string $field, $rule)
     {
-        if (is_string($rule)) {
+        if (!is_array($rule)) {
             $rule = [$rule];
         }
 
@@ -99,7 +103,7 @@ class ValidatorRule
     }
 
     /**
-     * @param array<string|int|string[]|ValidatorCallback> $rule
+     * @param list<ValitronRule> $rule
      */
     private function setRule(array $rule): void
     {
@@ -112,7 +116,7 @@ class ValidatorRule
     }
 
     /**
-     * @return array<string|int|string[]|ValidatorCallback>
+     * @return list<ValitronRule>
      */
     public function getRule(): array
     {
@@ -125,7 +129,7 @@ class ValidatorRule
     }
 
     /**
-     * @return array<string|array<string|int|string[]|ValidatorCallback>>
+     * @return list<ValitronRule>
      */
     public function getValitronRule(): array
     {
