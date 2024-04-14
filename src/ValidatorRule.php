@@ -7,6 +7,13 @@ namespace Atk4\Validate;
 use Atk4\Data\Exception;
 use Atk4\Data\Model;
 
+/**
+ * One validator rule.
+ *
+ * https://github.com/vlucas/valitron/blob/v1.4.11/src/Valitron/Validator.php#L1251
+ *
+ * @phpstan-type ValidatorCallback \Closure(string, mixed, list<mixed>, list<mixed>): bool
+ */
 class ValidatorRule
 {
     public const ON_SUCCESS = 'success';
@@ -20,13 +27,13 @@ class ValidatorRule
     public ?string $activateOn = null;
 
     /**
-     * @var list<string|int|string[]|\Closure(string, mixed, list<mixed>, list<mixed>): bool>
+     * @var list<string|int|string[]|ValidatorCallback>
      */
     private array $rule = [];
     private ?string $message = null;
 
     /**
-     * @param string|array<string|int|string[]|\Closure(string, mixed, list<mixed>, list<mixed>): bool> $rule
+     * @param string|array<string|int|string[]|ValidatorCallback> $rule
      */
     public function __construct(string $field, $rule)
     {
@@ -92,7 +99,7 @@ class ValidatorRule
     }
 
     /**
-     * @param array<string|int|string[]|\Closure(string, mixed, list<mixed>, list<mixed>): bool> $rule
+     * @param array<string|int|string[]|ValidatorCallback> $rule
      */
     private function setRule(array $rule): void
     {
@@ -105,7 +112,7 @@ class ValidatorRule
     }
 
     /**
-     * @return array<string|int|string[]|\Closure(string, mixed, list<mixed>, list<mixed>): bool>
+     * @return array<string|int|string[]|ValidatorCallback>
      */
     public function getRule(): array
     {
@@ -118,7 +125,7 @@ class ValidatorRule
     }
 
     /**
-     * @return array<string|array<string|int|string[]|\Closure(string, mixed, list<mixed>, list<mixed>): bool>>
+     * @return array<string|array<string|int|string[]|ValidatorCallback>>
      */
     public function getValitronRule(): array
     {

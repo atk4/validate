@@ -13,6 +13,10 @@ use Atk4\Data\Model;
  * Use https://github.com/vlucas/valitron under the hood.
  *
  * $v = new \Atk4\Validate\Validator($model);
+ *
+ * https://github.com/vlucas/valitron/blob/v1.4.11/src/Valitron/Validator.php#L1251
+ *
+ * @phpstan-type ValidatorCallback \Closure(string, mixed, list<mixed>, list<mixed>): bool
  */
 class Validator
 {
@@ -31,8 +35,8 @@ class Validator
     /**
      * Set rules of particular field.
      *
-     * @param array<string|array<string|int|string[]|\Closure(string, mixed, list<mixed>, list<mixed>): bool>> $rules
-     * @param array<string, mixed>|list<array<string, mixed>>                                                  $conditions
+     * @param array<string|array<string|int|string[]|ValidatorCallback>> $rules
+     * @param array<string, mixed>|list<array<string, mixed>>            $conditions
      *
      * @return $this
      */
@@ -64,7 +68,7 @@ class Validator
     /**
      * Set multiple rules.
      *
-     * @param array<string, list<string|array<string|int|string[]|\Closure(string, mixed, list<mixed>, list<mixed>): bool>>> $hash array with field name as key and rules as value
+     * @param array<string, list<string|array<string|int|string[]|ValidatorCallback>>> $hash array with field name as key and rules as value
      *
      * @return $this
      */
@@ -80,9 +84,9 @@ class Validator
     /**
      * Set conditional rules.
      *
-     * @param array<string, mixed>|list<array<string, mixed>>                                                                       $conditions
-     * @param array<string, string|list<string|array<string|int|string[]|\Closure(string, mixed, list<mixed>, list<mixed>): bool>>> $then_hash
-     * @param array<string, string|list<string|array<string|int|string[]|\Closure(string, mixed, list<mixed>, list<mixed>): bool>>> $else_hash
+     * @param array<string, mixed>|list<array<string, mixed>>                                 $conditions
+     * @param array<string, string|list<string|array<string|int|string[]|ValidatorCallback>>> $then_hash
+     * @param array<string, string|list<string|array<string|int|string[]|ValidatorCallback>>> $else_hash
      *
      * @return $this
      */
