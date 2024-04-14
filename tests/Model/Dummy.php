@@ -19,5 +19,6 @@ class Dummy extends Model
         $this->addField('age', ['type' => 'integer']);
         $this->addField('type', ['required' => true, 'enum' => ['dog', 'ball']]);
         $this->addField('tail_length', ['type' => 'float']);
+        $this->addField('dob', ['type' => 'date']);
     }
 }

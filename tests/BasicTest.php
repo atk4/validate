@@ -25,6 +25,7 @@ class BasicTest extends TestCase
                     'age' => 22,
                     'type' => 'dog',
                     'tail_length' => 5,
+                    'dob' => '2024-01-01',
                 ],
             ],
         ]);
@@ -326,5 +327,55 @@ class BasicTest extends TestCase
             ])->validate();
             self::assertSame(['name'], array_keys($err)); // for others name should be long enough
         }
+    }
+
+    /**
+     * Test complex data type.
+     */
+    public function testComplexDataType(): void
+    {
+        $model = $this->createModel();
+        $validator = $this->createValidator($model);
+
+        $validator->rule('dob', ['required', ['dateAfter', '2024-01-01']]);
+
+        // date of birth not set
+        $err = $model->createEntity()->validate();
+        self::assertSame(['dob'], array_keys($err));
+
+        // date of birth is to small
+        $err = $model->createEntity()->set('dob', new \DateTime('2023-01-01'))->validate();
+        self::assertSame(['dob'], array_keys($err));
+
+        // date of birth is ok
+        $err = $model->createEntity()->set('dob', new \DateTime('2024-10-01'))->validate();
+        self::assertSame([], array_keys($err));
+    }
+
+    /**
+     * Text complex type as condition.
+     */
+    public function testComplexDataTypeCondition(): void
+    {
+        $model = $this->createModel();
+        $validator = $this->createValidator($model);
+
+        // if date of birth is this date, then type is required
+        // otherwise name is required
+        $validator->if(['dob' => new \DateTime('2024-01-01')], [
+            'type' => ['required'],
+        ], [
+            'name' => ['required'],
+        ]);
+
+        $err = $model->createEntity()->setMulti([
+            'dob' => new \DateTime('2023-10-10'),
+        ])->validate();
+        self::assertSame(['name'], array_keys($err));
+
+        $err = $model->createEntity()->setMulti([
+            'dob' => new \DateTime('2024-01-01'),
+        ])->validate();
+        self::assertSame(['type'], array_keys($err));
     }
 }
