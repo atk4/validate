@@ -89,11 +89,11 @@ class ValidatorRule
         $this->activateOn ??= self::ON_SUCCESS;
 
         foreach ($this->activateConditions as $conditionField => $conditionValue) {
-            if ($this->activateOn === self::ON_SUCCESS && $model->get($conditionField) !== $conditionValue) {
+            if ($this->activateOn === self::ON_SUCCESS && $model->compare($conditionField, $conditionValue) === false) {
                 return false;
             }
 
-            if ($this->activateOn === self::ON_FAIL && $model->get($conditionField) === $conditionValue) {
+            if ($this->activateOn === self::ON_FAIL && $model->compare($conditionField, $conditionValue) === true) {
                 return false;
             }
         }
