@@ -13,8 +13,8 @@ use Atk4\Data\Model;
  * @phpstan-type ValidatorCallback \Closure(string, mixed, list<mixed>, list<mixed>): bool
  *
  * https://github.com/vlucas/valitron/blob/master/src/Valitron/Validator.php#L1240
- * @phpstan-type ValitronRuleType 'required'|'equals'|'different'|'accepted'|'array'|'numeric'|'integer'|'length'|'lengthBetween'|'lengthMin'|'lengthMax'|'min'|'max'|'between'|'in'|'listContains'|'notIn'|'contains'|'subset'|'containsUnique'|'ip'|'ipv4'|'ipv6'|'email'|'ascii'|'emailDNS'|'url'|'urlActive'|'alpha'|'alphaNum'|'slug'|'regex'|'date'|'dateFormat'|'dateBefore'|'dateAfter'|'boolean'|'creditCard'|'instanceOf'|'requiredWith'|'requiredWithout'|'optional'|'arrayHasKeys'
- * @phpstan-type ValitronRule array<int|'message', ValitronRuleType|int|string|string[]|ValidatorCallback>
+ * @phpstan-type ValitronRuleType 'accepted'|'alpha'|'alphaNum'|'array'|'arrayHasKeys'|'ascii'|'between'|'boolean'|'contains'|'containsUnique'|'creditCard'|'date'|'dateAfter'|'dateBefore'|'dateFormat'|'different'|'email'|'emailDNS'|'equals'|'in'|'instanceOf'|'integer'|'ip'|'ipv4'|'ipv6'|'length'|'lengthBetween'|'lengthMax'|'lengthMin'|'listContains'|'max'|'min'|'notIn'|'numeric'|'optional'|'regex'|'required'|'requiredWith'|'requiredWithout'|'slug'|'subset'|'url'|'urlActive'
+ * @phpstan-type ValitronRule array<int|'message', ValitronRuleType|int|string|list<string>|ValidatorCallback>
  */
 class ValidatorRule
 {

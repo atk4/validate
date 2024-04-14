@@ -284,22 +284,22 @@ class BasicTest extends TestCase
         // and set exactly the same rule using new ValidatorRule style
         // everyone should have name set
         $rule = new ValidatorRule('name', 'required');
-        $validators['new']->addValidatorRule($rule);
+        $validators['new']->addRule($rule);
 
         // dogs should have age set
         $rule = new ValidatorRule('age', 'required');
         $rule->setActivateOnSuccess(['type' => 'dog']);
-        $validators['new']->addValidatorRule($rule);
+        $validators['new']->addRule($rule);
 
         // dogs should be not older than 20 years
         $rule = new ValidatorRule('age', ['max', 20]);
         $rule->setActivateOnSuccess(['type' => 'dog']);
-        $validators['new']->addValidatorRule($rule);
+        $validators['new']->addRule($rule);
 
         // others should have name at least 4 chars long
         $rule = new ValidatorRule('name', ['lengthMin', 3, 'message' => 'Name to short']);
         $rule->setActivateOnFail(['type' => 'dog']);
-        $validators['new']->addValidatorRule($rule);
+        $validators['new']->addRule($rule);
 
         // now testing both
         foreach (['old', 'new'] as $i) {

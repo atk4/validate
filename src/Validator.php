@@ -15,11 +15,12 @@ use Atk4\Data\Model;
  * $v = new \Atk4\Validate\Validator($model);
  *
  * https://github.com/vlucas/valitron/blob/v1.4.11/src/Valitron/Validator.php#L1251 https://github.com/phpstan/phpstan/issues/10874
+ *
  * @phpstan-type ValidatorCallback \Closure(string, mixed, list<mixed>, list<mixed>): bool
  *
  * https://github.com/vlucas/valitron/blob/master/src/Valitron/Validator.php#L1240 https://github.com/phpstan/phpstan/issues/10874
- * @phpstan-type ValitronRuleType 'required'|'equals'|'different'|'accepted'|'array'|'numeric'|'integer'|'length'|'lengthBetween'|'lengthMin'|'lengthMax'|'min'|'max'|'between'|'in'|'listContains'|'notIn'|'contains'|'subset'|'containsUnique'|'ip'|'ipv4'|'ipv6'|'email'|'ascii'|'emailDNS'|'url'|'urlActive'|'alpha'|'alphaNum'|'slug'|'regex'|'date'|'dateFormat'|'dateBefore'|'dateAfter'|'boolean'|'creditCard'|'instanceOf'|'requiredWith'|'requiredWithout'|'optional'|'arrayHasKeys'
- * @phpstan-type ValitronRule array<int|'message', ValitronRuleType|int|string|string[]|ValidatorCallback>
+ * @phpstan-type ValitronRuleType 'accepted'|'alpha'|'alphaNum'|'array'|'arrayHasKeys'|'ascii'|'between'|'boolean'|'contains'|'containsUnique'|'creditCard'|'date'|'dateAfter'|'dateBefore'|'dateFormat'|'different'|'email'|'emailDNS'|'equals'|'in'|'instanceOf'|'integer'|'ip'|'ipv4'|'ipv6'|'length'|'lengthBetween'|'lengthMax'|'lengthMin'|'listContains'|'max'|'min'|'notIn'|'numeric'|'optional'|'regex'|'required'|'requiredWith'|'requiredWithout'|'slug'|'subset'|'url'|'urlActive'
+ * @phpstan-type ValitronRule array<int|'message', ValitronRuleType|int|string|list<string>|ValidatorCallback>
  */
 class Validator
 {
@@ -36,7 +37,7 @@ class Validator
     }
 
     /**
-     * Set rules of particular field.
+     * Add rule/rules for given field.
      *
      * @param array<string|ValitronRule>                      $rules
      * @param array<string, mixed>|list<array<string, mixed>> $conditions
@@ -50,7 +51,7 @@ class Validator
             if ($activateOn !== null) {
                 $validatorRule->setActivateOnResult($activateOn, $conditions);
             }
-            $this->addValidatorRule($validatorRule);
+            $this->addRule($validatorRule);
         }
 
         return $this;
@@ -61,7 +62,7 @@ class Validator
      *
      * @return $this
      */
-    public function addValidatorRule(ValidatorRule $validatorRule): self
+    public function addRule(ValidatorRule $validatorRule): self
     {
         $this->rules[] = $validatorRule;
 
