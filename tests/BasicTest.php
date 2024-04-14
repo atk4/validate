@@ -8,6 +8,7 @@ use Atk4\Data\Model;
 use Atk4\Data\Schema\TestCase;
 use Atk4\Validate\Tests\Model\Dummy;
 use Atk4\Validate\Validator;
+use Atk4\Validate\ValidatorRule;
 
 class BasicTest extends TestCase
 {
@@ -62,7 +63,7 @@ class BasicTest extends TestCase
 
         $validator->rule('name', ['required', ['lengthMin', 3]]);
 
-        $err = $model->createEntity()->set('name', 'a')->validate();
+        $err = $model->createEntity()->setNull('name')->validate();
         self::assertSame(['name'], array_keys($err));
     }
 
@@ -97,10 +98,10 @@ class BasicTest extends TestCase
         $model = $this->createModel();
         $validator = $this->createValidator($model);
 
-        // Age should be odd (nepāra skaitlis)
+        // Age should be odd number
         $validator->rule('age', [
             [
-                static function ($field, $value, $params, $data) {
+                static function (string $field, $value, array $params, array $data): bool {
                     return $value % 2 !== 0;
                 },
                 'message' => 'Age should be odd',
@@ -192,7 +193,7 @@ class BasicTest extends TestCase
             'type' => 'dog',
             'age' => 2,
         ])->validate();
-        self::assertSame(['age'], array_keys($err)); // for dogs also age should be at least 3
+        self::assertSame(['age'], array_keys($err)); // for dogs age should be at least 3
 
         $err = $model->createEntity()->setMulti([
             'type' => 'dog',
@@ -229,18 +230,122 @@ class BasicTest extends TestCase
     {
         $model = $this->createModel();
         $validator = $this->createValidator($model);
-        $validator->rule('name', ['required', ['lengthMin', 3]]);
+        $validator->rule('name', ['required', ['lengthMin', 3, 'message' => 'Name to short']]);
 
-        $entity = $model->createEntity();
-        $entity->setMulti([
+        $entity = $model->createEntity()->setMulti([
             'name' => 'abcd',
             'type' => 'dog',
         ]);
 
-        $err = $entity->validate();
-        self::assertSame([], $err);
-
         // will not raise exception for return an empty array in place of null
         $entity->save();
+
+        $entity = $model->createEntity()->setMulti([
+            'name' => 'a',
+            'type' => 'dog',
+        ]);
+
+        // will raise exception because name to short
+        self::expectExceptionMessage('Name to short');
+        $entity->save();
+    }
+
+    public function testExceptionIfRule(): void
+    {
+        $rule = new ValidatorRule('test', ['required']);
+        $rule->setActivateOnSuccess(['type' => 'dog']); // if type=dog, then check if field "test" is set
+
+        self::expectExceptionMessage('Activation condition already set');
+        $rule->setActivateOnFail(['type' => 'dog']); // should not try to set another condition on same rule
+    }
+
+    public function testComplexRuleset(): void
+    {
+        $model = $this->createModel();
+        $validator = $this->createValidator($model);
+
+        // everyone should have name set
+        $rule = new ValidatorRule('name', 'required');
+        $validator->addValidatorRule($rule);
+
+        // dogs should have age set
+        $rule = new ValidatorRule('age', 'required');
+        $rule->setActivateOnSuccess(['type' => 'dog']);
+        $validator->addValidatorRule($rule);
+
+        // dogs should be not older than 20 years
+        $rule = new ValidatorRule('age', ['max', 20]);
+        $rule->setActivateOnSuccess(['type' => 'dog']);
+        $validator->addValidatorRule($rule);
+
+        // others should have name at least 4 chars long
+        $rule = new ValidatorRule('name', ['lengthMin', 3, 'message' => 'Name to short']);
+        $rule->setActivateOnFail(['type' => 'dog']);
+        $validator->addValidatorRule($rule);
+
+        // now testing
+        $err = $model->createEntity()->setMulti([
+            'type' => 'ball',
+        ])->validate();
+        self::assertSame(['name'], array_keys($err)); // name is required for everyone
+
+        $err = $model->createEntity()->setMulti([
+            'type' => 'dog',
+        ])->validate();
+        self::assertSame(['name', 'age'], array_keys($err)); // name and age is required for dogs
+
+        $err = $model->createEntity()->setMulti([
+            'type' => 'dog',
+            'name' => 'AB',
+            'age' => 25,
+        ])->validate();
+        self::assertSame(['age'], array_keys($err)); // for dogs age should be no more than 20, but short name is fine
+
+        $err = $model->createEntity()->setMulti([
+            'type' => 'ball',
+            'name' => 'AB',
+        ])->validate();
+        self::assertSame(['name'], array_keys($err)); // for others name should be long enough
+    }
+
+    // exactly the same rules as in previous tests, but defined by using short-hand method
+    public function testComplexRuleset2(): void
+    {
+        $model = $this->createModel();
+        $validator = $this->createValidator($model);
+
+        // everyone should have name set
+        // dogs should have age set and not older than 20 years
+        // others should have name at least 4 chars long
+        $validator->if(['type' => 'dog'], [
+            'name' => ['required'],
+            'age' => ['required', ['max', 20]],
+        ], [
+            'name' => ['required', ['lengthMin', 3, 'message' => 'Name to short']],
+        ]);
+
+        // now testing
+        $err = $model->createEntity()->setMulti([
+            'type' => 'ball',
+        ])->validate();
+        self::assertSame(['name'], array_keys($err)); // name is required for everyone
+
+        $err = $model->createEntity()->setMulti([
+            'type' => 'dog',
+        ])->validate();
+        self::assertSame(['name', 'age'], array_keys($err)); // name and age is required for dogs
+
+        $err = $model->createEntity()->setMulti([
+            'type' => 'dog',
+            'name' => 'AB',
+            'age' => 25,
+        ])->validate();
+        self::assertSame(['age'], array_keys($err)); // for dogs age should be no more than 20, but short name is fine
+
+        $err = $model->createEntity()->setMulti([
+            'type' => 'ball',
+            'name' => 'AB',
+        ])->validate();
+        self::assertSame(['name'], array_keys($err)); // for others name should be long enough
     }
 }
