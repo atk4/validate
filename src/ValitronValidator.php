@@ -13,7 +13,7 @@ class ValitronValidator extends OriginalValidator
 {
     protected function validateDate($field, $value)
     {
-        if ($this->validateRequired($field, $value, $params)===false) {
+        if (is_null($value) || (is_string($value) && trim($value) === '')) {
             return false;
         }
 
@@ -22,7 +22,7 @@ class ValitronValidator extends OriginalValidator
 
     protected function validateDateFormat($field, $value, $params)
     {
-        if ($this->validateRequired($field, $value, $params)===false) {
+        if (is_null($value) || (is_string($value) && trim($value) === '')) {
             return false;
         }
 
@@ -31,7 +31,7 @@ class ValitronValidator extends OriginalValidator
 
     protected function validateDateBefore($field, $value, $params)
     {
-        if ($this->validateRequired($field, $value, $params)===false) {
+        if (is_null($value) || (is_string($value) && trim($value) === '')) {
             return false;
         }
 
@@ -40,7 +40,7 @@ class ValitronValidator extends OriginalValidator
 
     protected function validateDateAfter($field, $value, $params)
     {
-        if ($this->validateRequired($field, $value, $params)===false) {
+        if (is_null($value) || (is_string($value) && trim($value) === '')) {
             return false;
         }
 
