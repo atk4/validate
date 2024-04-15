@@ -11,6 +11,7 @@ use Valitron\Validator as OriginalValidator;
  */
 class ValitronValidator extends OriginalValidator
 {
+    #[\Override]
     protected function validateDate($field, $value)
     {
         if ($value === null || (is_string($value) && trim($value) === '')) {
@@ -21,6 +22,7 @@ class ValitronValidator extends OriginalValidator
     }
 
     /** @param array<mixed> $params */
+    #[\Override]
     protected function validateDateFormat($field, $value, $params)
     {
         if ($value === null || (is_string($value) && trim($value) === '')) {
@@ -31,6 +33,7 @@ class ValitronValidator extends OriginalValidator
     }
 
     /** @param array<mixed> $params */
+    #[\Override]
     protected function validateDateBefore($field, $value, $params)
     {
         if ($value === null || (is_string($value) && trim($value) === '')) {
@@ -41,6 +44,7 @@ class ValitronValidator extends OriginalValidator
     }
 
     /** @param array<mixed> $params */
+    #[\Override]
     protected function validateDateAfter($field, $value, $params)
     {
         if ($value === null || (is_string($value) && trim($value) === '')) {
