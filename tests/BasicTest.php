@@ -403,7 +403,7 @@ class BasicTest extends TestCase
         $validator->rule('name', ['required', ['dateFormat', 'd-m-Y'], ['dateBefore', '20-10-2024']]);
 
         // date not set
-        $err = $model->createEntity()->set('name', '20-10-2025')->validate();
+        $err = $model->createEntity()->validate();
         self::assertSame(['name'], array_keys($err));
 
         // date of birth is to big
