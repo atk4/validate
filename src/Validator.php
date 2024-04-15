@@ -116,7 +116,7 @@ class Validator
     public function validate(Model $model): array
     {
         // initialize Validator, set data
-        $v = new \Valitron\Validator($model->get());
+        $v = new ValitronValidator($model->get());
 
         $rules = [];
         foreach ($this->rules as $rule) {
