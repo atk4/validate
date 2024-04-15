@@ -332,12 +332,12 @@ class BasicTest extends TestCase
     /**
      * Test complex data type.
      */
-    public function testComplexDataType(): void
+    public function testComplexDataTypeInRule(): void
     {
         $model = $this->createModel();
         $validator = $this->createValidator($model);
 
-        $validator->rule('dob', [['dateAfter', '2024-01-01']]);
+        $validator->rule('dob', ['required', ['dateAfter', '2024-01-01']]);
 
         // date of birth not set
         $err = $model->createEntity()->validate();
@@ -355,7 +355,7 @@ class BasicTest extends TestCase
     /**
      * Text complex type as condition.
      */
-    public function testComplexDataTypeCondition(): void
+    public function testComplexDataTypeInCondition(): void
     {
         $model = $this->createModel();
         $validator = $this->createValidator($model);
