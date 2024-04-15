@@ -337,7 +337,7 @@ class BasicTest extends TestCase
         $model = $this->createModel();
         $validator = $this->createValidator($model);
 
-        $validator->rule('dob', ['required', ['dateAfter', '2024-01-01']]);
+        $validator->rule('dob', ['required', 'date', ['dateAfter', '2024-01-01']]);
 
         // date of birth not set
         $err = $model->createEntity()->validate();
@@ -377,5 +377,24 @@ class BasicTest extends TestCase
             'dob' => new \DateTime('2024-01-01'),
         ])->validate();
         self::assertSame(['type'], array_keys($err));
+    }
+
+    /**
+     * Test DateTime data typefor coverage.
+     */
+    public function testDateTimeForCoverage(): void
+    {
+        $model = $this->createModel();
+        $validator = $this->createValidator($model);
+
+        $validator->rule('dob', ['required', ['dateFormat', 'DD-MM-YYYY'], ['dateBefore', '20-10-2024']]);
+
+        // date of birth is to big
+        $err = $model->createEntity()->set('dob', new \DateTime('2025-01-01'))->validate();
+        self::assertSame(['dob'], array_keys($err));
+
+        // date of birth is ok
+        $err = $model->createEntity()->set('dob', new \DateTime('2024-10-01'))->validate();
+        self::assertSame([], array_keys($err));
     }
 }

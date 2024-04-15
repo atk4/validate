@@ -29,6 +29,10 @@ class ValitronValidator extends OriginalValidator
             return false;
         }
 
+        if ($value instanceof \DateTime) {
+            return true;
+        }
+
         return parent::validateDateFormat($field, $value, $params);
     }
 
