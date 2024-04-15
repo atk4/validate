@@ -384,17 +384,30 @@ class BasicTest extends TestCase
      */
     public function testDateTimeForCoverage(): void
     {
+        // test as DateTime field
         $model = $this->createModel();
         $validator = $this->createValidator($model);
-
-        $validator->rule('dob', ['required', ['dateFormat', 'DD-MM-YYYY'], ['dateBefore', '20-10-2024']]);
+        $validator->rule('dob', ['required', ['dateFormat', 'd-m-Y'], ['dateBefore', '20-10-2024']]);
 
         // date of birth is to big
-        $err = $model->createEntity()->set('dob', new \DateTime('2025-01-01'))->validate();
+        $err = $model->createEntity()->set('dob', new \DateTime('2025-10-20'))->validate();
         self::assertSame(['dob'], array_keys($err));
 
         // date of birth is ok
-        $err = $model->createEntity()->set('dob', new \DateTime('2024-10-01'))->validate();
+        $err = $model->createEntity()->set('dob', new \DateTime('2024-05-20'))->validate();
+        self::assertSame([], array_keys($err));
+
+        // now test as simple text field
+        $model = $this->createModel();
+        $validator = $this->createValidator($model);
+        $validator->rule('name', ['required', ['dateFormat', 'd-m-Y'], ['dateBefore', '20-10-2024']]);
+
+        // date of birth is to big
+        $err = $model->createEntity()->set('name', '20-10-2025')->validate();
+        self::assertSame(['name'], array_keys($err));
+
+        // date of birth is ok
+        $err = $model->createEntity()->set('name', '20-05-2024')->validate();
         self::assertSame([], array_keys($err));
     }
 }
