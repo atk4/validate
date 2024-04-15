@@ -334,21 +334,16 @@ class BasicTest extends TestCase
      */
     public function testComplexDataType(): void
     {
-        // date of birth not set
-        $model = $this->createModel();
-        $validator = $this->createValidator($model);
-
-        $validator->rule('dob', ['required']);
-
-        $err = $model->createEntity()->validate();
-        self::assertSame(['dob'], array_keys($err));
-
-        // date of birth is to small
         $model = $this->createModel();
         $validator = $this->createValidator($model);
 
         $validator->rule('dob', [['dateAfter', '2024-01-01']]);
 
+        // date of birth not set
+        $err = $model->createEntity()->validate();
+        self::assertSame(['dob'], array_keys($err));
+
+        // date of birth is to small
         $err = $model->createEntity()->set('dob', new \DateTime('2023-01-01'))->validate();
         self::assertSame(['dob'], array_keys($err));
 
