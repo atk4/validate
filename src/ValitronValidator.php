@@ -6,9 +6,6 @@ namespace Atk4\Validate;
 
 use Valitron\Validator as OriginalValidator;
 
-/**
- * Valitron Validation Class with required fixes.
- */
 class ValitronValidator extends OriginalValidator
 {
     #[\Override]
