@@ -35,7 +35,9 @@ class ValitronValidator extends OriginalValidator
         return parent::validateDateFormat($field, $value, $params);
     }
 
-    /** @param array<mixed> $params */
+    /**
+     * @param array<mixed> $params
+     */
     #[\Override]
     protected function validateDateBefore($field, $value, $params)
     {
@@ -43,14 +45,24 @@ class ValitronValidator extends OriginalValidator
             return false;
         }
 
+        if (!isset($params[0]) || $params[0] === null || (is_string($params[0]) && trim($params[0]) === '')) {
+            return false;
+        }
+
         return parent::validateDateBefore($field, $value, $params);
     }
 
-    /** @param array<mixed> $params */
+    /**
+     * @param array<mixed> $params
+     */
     #[\Override]
     protected function validateDateAfter($field, $value, $params)
     {
         if ($value === null || (is_string($value) && trim($value) === '')) {
+            return false;
+        }
+
+        if (!isset($params[0]) || $params[0] === null || (is_string($params[0]) && trim($params[0]) === '')) {
             return false;
         }
 
