@@ -129,7 +129,7 @@ class Validator
         $v->mapFieldsRules($rules);
 
         // validate and if errors then format them to fit Atk4 error format
-        if ($v->validate() === true) {
+        if ($v->validate()) {
             return [];
         }
 
