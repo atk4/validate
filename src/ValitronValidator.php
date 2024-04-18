@@ -21,7 +21,9 @@ class ValitronValidator extends OriginalValidator
         return parent::validateDate($field, $value);
     }
 
-    /** @param array<mixed> $params */
+    /**
+     * @param array<mixed> $params
+     */
     #[\Override]
     protected function validateDateFormat($field, $value, $params)
     {
