@@ -94,7 +94,7 @@ class ValidatorRule
                 return false;
             }
 
-            if ($this->activateOn === self::ON_FAIL && $model->compare($conditionField, $conditionValue) === true) {
+            if ($this->activateOn === self::ON_FAIL && $model->compare($conditionField, $conditionValue)) {
                 return false;
             }
         }
