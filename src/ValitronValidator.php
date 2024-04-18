@@ -45,7 +45,7 @@ class ValitronValidator extends OriginalValidator
             return false;
         }
 
-        if (!isset($params[0]) || $params[0] === null || (is_string($params[0]) && trim($params[0]) === '')) {
+        if (!isset($params[0]) || (is_string($params[0]) && trim($params[0]) === '')) {
             return false;
         }
 
@@ -62,7 +62,7 @@ class ValitronValidator extends OriginalValidator
             return false;
         }
 
-        if (!isset($params[0]) || $params[0] === null || (is_string($params[0]) && trim($params[0]) === '')) {
+        if (!isset($params[0]) || (is_string($params[0]) && trim($params[0]) === '')) {
             return false;
         }
 

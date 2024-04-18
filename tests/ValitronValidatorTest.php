@@ -17,17 +17,27 @@ class ValitronValidatorTest extends TestCase
         parent::setUp();
     }
 
-    protected function createOriginalValidator(array $data = [], array $rules = []): OriginalValidator
+    /**
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $rules
+     */
+    protected function createOriginalValidator(array $data, array $rules): OriginalValidator
     {
         $v = new OriginalValidator($data);
         $v->mapFieldsRules($rules);
+
         return $v;
     }
 
-    protected function createFixedValidator(array $data = [], array $rules = []): FixedValidator
+    /**
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $rules
+     */
+    protected function createFixedValidator(array $data, array $rules): FixedValidator
     {
         $v = new FixedValidator($data);
         $v->mapFieldsRules($rules);
+
         return $v;
     }
 
@@ -67,14 +77,14 @@ class ValitronValidatorTest extends TestCase
 
     public function testDateFormat2(): void
     {
-        $data = ['d' => new \Datetime()];
+        $data = ['d' => new \DateTime()];
         $rules = ['d' => ['required', ['dateFormat', 'd-m-Y']]];
 
         $v = $this->createOriginalValidator($data, $rules);
 
         // There should not be exception, but original class throws
         // TypeError: date_parse_from_format(): Argument #2 ($datetime) must be of type string, DateTime given
-        self::expectException(TypeError::class);
+        self::expectException(\TypeError::class);
         $v->validate();
 
         $v = $this->createFixedValidator($data, $rules);
