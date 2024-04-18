@@ -33,8 +33,8 @@ class ValidatorRule
     /**
      * @var list<ValitronRule>
      */
-    private array $rule = [];
-    private ?string $message = null;
+    private array $rule;
+    private ?string $message;
 
     /**
      * @param ValitronRuleType|ValitronRule|ValidatorCallback $rule

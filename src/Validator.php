@@ -116,7 +116,7 @@ class Validator
     public function validate(Model $model): array
     {
         // initialize Validator, set data
-        $v = new ValitronValidator($model->get());
+        $validator = new ValitronValidator($model->get());
 
         $rules = [];
         foreach ($this->rules as $rule) {
@@ -126,15 +126,15 @@ class Validator
         }
 
         // set up Valitron rules
-        $v->mapFieldsRules($rules);
+        $validator->mapFieldsRules($rules);
 
         // validate and if errors then format them to fit Atk4 error format
-        if ($v->validate()) {
+        if ($validator->validate()) {
             return [];
         }
 
         $errors = [];
-        foreach ($v->errors() as $key => $e) {
+        foreach ($validator->errors() as $key => $e) {
             if (!isset($errors[$key])) {
                 $errors[$key] = array_pop($e);
             }
