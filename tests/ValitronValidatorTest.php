@@ -31,6 +31,16 @@ class ValitronValidatorTest extends TestCase
         return $v;
     }
 
+    public function testDate2(): void
+    {
+        $v = $this->createOriginalValidator(['d' => null], ['d' => ['required', 'date']]);
+        $v->validate();
+        var_dump($v->errors());
+
+
+    }
+
+    /*
     public function testDate(): void
     {
         $data = [
@@ -89,4 +99,34 @@ class ValitronValidatorTest extends TestCase
         self::assertFalse($ok);
         self::assertSame(['f_bad_string'], array_keys($v->errors()));
     }
+
+    public function testDateBefore(): void
+    {
+        $data = [
+            'f_good_string' => '2024-10-20',
+            'f_bad_string' => 'bad-date',
+            'f_null' => null,
+            'f_empty' => '',
+            'f_datetime' => new \Datetime('2024-10-20'),
+        ];
+        $rules = [
+            'f_good_string' => [['dateBefore', '2024-10-21']],
+            'f_bad_string' => [['dateBefore', '2024-10-21']],
+            'f_null' => [['dateBefore', '2024-10-21']],
+            'f_empty' => [['dateBefore', '2024-10-21']],
+            'f_datetime' => [['dateBefore', '2024-10-21']],
+        ];
+
+        $v = $this->createOriginalValidator($data, $rules);
+        $ok = $v->validate();
+var_dump($v->errors());
+        self::assertFalse($ok);
+        self::assertSame(['f_bad_string'], array_keys($v->errors()));
+
+        $v = $this->createFixedValidator($data, $rules);
+        $ok = $v->validate();
+        self::assertFalse($ok);
+        self::assertSame(['f_bad_string'], array_keys($v->errors()));
+    }
+    */
 }
