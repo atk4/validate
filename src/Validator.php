@@ -120,7 +120,7 @@ class Validator
 
         $rules = [];
         foreach ($this->rules as $rule) {
-            if ($rule->isActivated($model) === true) {
+            if ($rule->isActivated($model)) {
                 $rules[$rule->field][] = $rule->getValitronRule();
             }
         }
