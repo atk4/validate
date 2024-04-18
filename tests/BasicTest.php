@@ -329,9 +329,6 @@ class BasicTest extends TestCase
         }
     }
 
-    /**
-     * Test complex data type.
-     */
     public function testComplexDataTypeInRule(): void
     {
         $model = $this->createModel();
