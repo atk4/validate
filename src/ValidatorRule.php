@@ -21,6 +21,7 @@ class ValidatorRule
 {
     public const ON_SUCCESS = 'success';
     public const ON_FAIL = 'fail';
+
     public string $field;
 
     /**
