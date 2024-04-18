@@ -6,6 +6,7 @@ namespace Atk4\Validate\Tests;
 
 use Atk4\Data\Schema\TestCase;
 use Atk4\Validate\ValitronValidator as FixedValidator;
+use TypeError;
 use Valitron\Validator as OriginalValidator;
 
 class ValitronValidatorTest extends TestCase
@@ -16,14 +17,18 @@ class ValitronValidatorTest extends TestCase
         parent::setUp();
     }
 
-    protected function createOriginalValidator(array $data = [], array $fields = []): OriginalValidator
+    protected function createOriginalValidator(array $data = [], array $rules = []): OriginalValidator
     {
-        return new OriginalValidator($data, $fields);
+        $v = new OriginalValidator($data);
+        $v->mapFieldsRules($rules);
+        return $v;
     }
 
-    protected function createFixedValidator(array $data = [], array $fields = []): FixedValidator
+    protected function createFixedValidator(array $data = [], array $rules = []): FixedValidator
     {
-        return new FixedValidator($data, $fields);
+        $v = new FixedValidator($data);
+        $v->mapFieldsRules($rules);
+        return $v;
     }
 
     public function testDate(): void
@@ -32,30 +37,56 @@ class ValitronValidatorTest extends TestCase
             'f_good_string' => '2024-10-20',
             'f_bad_string' => 'bad-date',
             'f_null' => null,
-            'f_empty_string' => '',
+            'f_empty' => '',
             'f_datetime' => new \Datetime('2024-10-20'),
         ];
         $rules = [
-            'f_good_string' => 'date',
-            'f_bad_string' => 'date',
-            'f_null' => 'date',
-            'f_empty_string' => 'date',
-            'f_datetime' => 'date',
+            'f_good_string' => ['date'],
+            'f_bad_string' => ['date'],
+            'f_null' => ['date'],
+            'f_empty' => ['date'],
+            'f_datetime' => ['date'],
         ];
 
-        $v = $this->createOriginalValidator($data);
-        $v->mapFieldsRules($rules);
-        $ok = $v->validate();
-        self::assertFalse($ok);
-        self::assertSame(['f_bad_string'], array_keys($v->errors()));
-        //var_dump($v->errors());
-
-        $v = $this->createFixedValidator($data);
-        $v->mapFieldsRules($rules);
+        $v = $this->createOriginalValidator($data, $rules);
         $ok = $v->validate();
         self::assertFalse($ok);
         self::assertSame(['f_bad_string'], array_keys($v->errors()));
 
+        $v = $this->createFixedValidator($data, $rules);
+        $ok = $v->validate();
+        self::assertFalse($ok);
+        self::assertSame(['f_bad_string'], array_keys($v->errors()));
     }
 
+    public function testDateFormat(): void
+    {
+        $data = [
+            'f_good_string' => '20-10-2024',
+            'f_bad_string' => 'bad-date',
+            'f_null' => null,
+            'f_empty' => '',
+            'f_datetime' => new \Datetime('2024-10-20'),
+        ];
+        $rules = [
+            'f_good_string' => [['dateFormat', 'd-m-Y']],
+            'f_bad_string' => [['dateFormat', 'd-m-Y']],
+            'f_null' => [['dateFormat', 'd-m-Y']],
+            'f_empty' => [['dateFormat', 'd-m-Y']],
+            'f_datetime' => [['dateFormat', 'd-m-Y']],
+        ];
+
+        $v = $this->createOriginalValidator($data, $rules);
+        // There should not be exception, but original class throws
+        // TypeError: date_parse_from_format(): Argument #2 ($datetime) must be of type string, DateTime given
+        self::expectException(TypeError::class);
+        $ok = $v->validate();
+        self::assertFalse($ok);
+        self::assertSame(['f_bad_string'], array_keys($v->errors()));
+
+        $v = $this->createFixedValidator($data, $rules);
+        $ok = $v->validate();
+        self::assertFalse($ok);
+        self::assertSame(['f_bad_string'], array_keys($v->errors()));
+    }
 }
