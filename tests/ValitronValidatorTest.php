@@ -35,6 +35,9 @@ class ValitronValidatorTest extends TestCase
         return $validator;
     }
 
+    /**
+     * @return mixed
+     */
     private function executeFxAndThrowErrors(\Closure $fx, int $errorLevels = \E_ALL)
     {
         set_error_handler(
@@ -68,7 +71,7 @@ class ValitronValidatorTest extends TestCase
             $this->expectException(\Exception::class);
             $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
         }
-        $this->executeFxAndThrowErrors(function() use ($v){
+        $this->executeFxAndThrowErrors(static function () use ($v) {
             $v->validate();
         });
     }
@@ -90,7 +93,7 @@ class ValitronValidatorTest extends TestCase
             $this->expectException(\Exception::class);
             $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: date_parse_from_format(): Passing null to parameter #2 ($datetime) of type string is deprecated
         }
-        $this->executeFxAndThrowErrors(function() use ($v){
+        $this->executeFxAndThrowErrors(static function () use ($v) {
             $v->validate();
         });
     }
@@ -116,7 +119,7 @@ class ValitronValidatorTest extends TestCase
             // TypeError: date_parse_from_format(): Argument #2 ($datetime) must be of type string, DateTime given
             self::expectException(\TypeError::class);
         }
-        $this->executeFxAndThrowErrors(function() use ($v){
+        $this->executeFxAndThrowErrors(static function () use ($v) {
             $v->validate();
         });
     }
@@ -138,7 +141,7 @@ class ValitronValidatorTest extends TestCase
             $this->expectException(\Exception::class);
             $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
         }
-        $this->executeFxAndThrowErrors(function() use ($v){
+        $this->executeFxAndThrowErrors(static function () use ($v) {
             $v->validate();
         });
     }
@@ -160,7 +163,7 @@ class ValitronValidatorTest extends TestCase
             $this->expectException(\Exception::class);
             $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
         }
-        $this->executeFxAndThrowErrors(function() use ($v){
+        $this->executeFxAndThrowErrors(static function () use ($v) {
             $v->validate();
         });
     }
@@ -182,7 +185,7 @@ class ValitronValidatorTest extends TestCase
             $this->expectException(\Exception::class);
             $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
         }
-        $this->executeFxAndThrowErrors(function() use ($v){
+        $this->executeFxAndThrowErrors(static function () use ($v) {
             $v->validate();
         });
     }
@@ -204,7 +207,7 @@ class ValitronValidatorTest extends TestCase
             $this->expectException(\Exception::class);
             $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
         }
-        $this->executeFxAndThrowErrors(function() use ($v){
+        $this->executeFxAndThrowErrors(static function () use ($v) {
             $v->validate();
         });
     }
