@@ -41,11 +41,12 @@ class ValitronValidatorTest extends TestCase
         return $v;
     }
 
-    private function throwAsExceptions(int $error_levels = E_ALL): void
+    private function throwAsExceptions(int $error_levels = \E_ALL): void
     {
         set_error_handler(
             static function ($errno, $errstr) {
                 restore_error_handler();
+
                 throw new \Exception($errstr, $errno);
             },
             $error_levels
@@ -60,12 +61,12 @@ class ValitronValidatorTest extends TestCase
         $v = $this->createOriginalValidator($data, $rules);
 
         // this throws depreciation notice starting PHP 8.1
-        if (version_compare(PHP_VERSION, '8.1.0', '>=')) {
+        if (version_compare(\PHP_VERSION, '8.1.0', '>=')) {
             $this->throwAsExceptions();
             $this->expectException(\Exception::class);
             $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
-            $v->validate(); // @todo PHPUnit bug: https://github.com/sebastianbergmann/phpunit/pull/5822
         }
+        $v->validate(); // @todo PHPUnit bug: https://github.com/sebastianbergmann/phpunit/pull/5822
 
         $v = $this->createFixedValidator($data, $rules);
         self::assertFalse($v->validate());
@@ -81,12 +82,12 @@ class ValitronValidatorTest extends TestCase
         $v = $this->createOriginalValidator($data, $rules);
 
         // this throws depreciation notice starting PHP 8.1
-        if (version_compare(PHP_VERSION, '8.1.0', '>=')) {
+        if (version_compare(\PHP_VERSION, '8.1.0', '>=')) {
             $this->throwAsExceptions();
             $this->expectException(\Exception::class);
             $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: date_parse_from_format(): Passing null to parameter #2 ($datetime) of type string is deprecated
-            $v->validate(); // @todo PHPUnit bug: https://github.com/sebastianbergmann/phpunit/pull/5822
         }
+        $v->validate(); // @todo PHPUnit bug: https://github.com/sebastianbergmann/phpunit/pull/5822
 
         $v = $this->createFixedValidator($data, $rules);
         self::assertFalse($v->validate());
@@ -101,9 +102,15 @@ class ValitronValidatorTest extends TestCase
 
         $v = $this->createOriginalValidator($data, $rules);
 
-        // There should not be exception, but original class throws
-        // TypeError: date_parse_from_format(): Argument #2 ($datetime) must be of type string, DateTime given
-        self::expectException(\TypeError::class);
+        // this throws warning in PHP 7.4 and TypeError in 8.x
+        if (version_compare(\PHP_VERSION, '8.0.0', '<')) {
+            $this->throwAsExceptions();
+            $this->expectException(\Exception::class);
+            $this->expectExceptionMessageMatches('/.*expects parameter 2 to be string, object given.*/'); // Warning: date_parse_from_format() expects parameter 2 to be string, object given
+        } else {
+            // TypeError: date_parse_from_format(): Argument #2 ($datetime) must be of type string, DateTime given
+            self::expectException(\TypeError::class);
+        }
         $v->validate(); // @todo PHPUnit bug: https://github.com/sebastianbergmann/phpunit/pull/5822
 
         $v = $this->createFixedValidator($data, $rules);
@@ -119,12 +126,12 @@ class ValitronValidatorTest extends TestCase
         $v = $this->createOriginalValidator($data, $rules);
 
         // this throws depreciation notice starting PHP 8.1
-        if (version_compare(PHP_VERSION, '8.1.0', '>=')) {
+        if (version_compare(\PHP_VERSION, '8.1.0', '>=')) {
             $this->throwAsExceptions();
             $this->expectException(\Exception::class);
             $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
-            $v->validate(); // @todo PHPUnit bug: https://github.com/sebastianbergmann/phpunit/pull/5822
         }
+        $v->validate(); // @todo PHPUnit bug: https://github.com/sebastianbergmann/phpunit/pull/5822
 
         $v = $this->createFixedValidator($data, $rules);
         self::assertFalse($v->validate());
@@ -140,12 +147,12 @@ class ValitronValidatorTest extends TestCase
         $v = $this->createOriginalValidator($data, $rules);
 
         // this throws depreciation notice starting PHP 8.1
-        if (version_compare(PHP_VERSION, '8.1.0', '>=')) {
+        if (version_compare(\PHP_VERSION, '8.1.0', '>=')) {
             $this->throwAsExceptions();
             $this->expectException(\Exception::class);
             $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
-            $v->validate(); // @todo PHPUnit bug: https://github.com/sebastianbergmann/phpunit/pull/5822
         }
+        $v->validate(); // @todo PHPUnit bug: https://github.com/sebastianbergmann/phpunit/pull/5822
 
         $v = $this->createFixedValidator($data, $rules);
         self::assertFalse($v->validate());
