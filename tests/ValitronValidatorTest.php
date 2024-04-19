@@ -52,6 +52,7 @@ class ValitronValidatorTest extends TestCase
         // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
         //self::expectUserDeprecationMessage('Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated');
         // or use expectUserDeprecationMessageMatches(regex)
+        self::expectException(\TypeError::class);
         $v->validate(); // @todo why validate fail with assert(isset($trace[1]['file'])) ???
 
         $v = $this->createFixedValidator($data, $rules);
@@ -69,6 +70,7 @@ class ValitronValidatorTest extends TestCase
 
         // this throws depreciation notice starting PHP 8.1
         // Deprecated: date_parse_from_format(): Passing null to parameter #2 ($datetime) of type string is deprecated
+        self::expectException(\TypeError::class);
         $v->validate(); // @todo why validate fail with assert(isset($trace[1]['file'])) ???
 
         $v = $this->createFixedValidator($data, $rules);
@@ -104,6 +106,7 @@ class ValitronValidatorTest extends TestCase
 
         // this throws depreciation notice starting PHP 8.1
         // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
+        self::expectException(\TypeError::class);
         $v->validate(); // @todo why validate fail with assert(isset($trace[1]['file'])) ???
 
         $v = $this->createFixedValidator($data, $rules);
@@ -121,6 +124,7 @@ class ValitronValidatorTest extends TestCase
 
         // this throws depreciation notice starting PHP 8.1
         // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
+        self::expectException(\TypeError::class);
         $v->validate(); // @todo why validate fail with assert(isset($trace[1]['file'])) ???
 
         $v = $this->createFixedValidator($data, $rules);
