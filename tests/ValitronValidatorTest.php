@@ -66,7 +66,7 @@ class ValitronValidatorTest extends TestCase
             $this->expectException(\Exception::class);
             $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
         }
-        $v->validate(); // @todo PHPUnit bug: https://github.com/sebastianbergmann/phpunit/pull/5822
+        $v->validate();
 
         $v = $this->createFixedValidator($data, $rules);
         self::assertFalse($v->validate());
@@ -87,7 +87,7 @@ class ValitronValidatorTest extends TestCase
             $this->expectException(\Exception::class);
             $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: date_parse_from_format(): Passing null to parameter #2 ($datetime) of type string is deprecated
         }
-        $v->validate(); // @todo PHPUnit bug: https://github.com/sebastianbergmann/phpunit/pull/5822
+        $v->validate();
 
         $v = $this->createFixedValidator($data, $rules);
         self::assertFalse($v->validate());
@@ -111,7 +111,7 @@ class ValitronValidatorTest extends TestCase
             // TypeError: date_parse_from_format(): Argument #2 ($datetime) must be of type string, DateTime given
             self::expectException(\TypeError::class);
         }
-        $v->validate(); // @todo PHPUnit bug: https://github.com/sebastianbergmann/phpunit/pull/5822
+        $v->validate();
 
         $v = $this->createFixedValidator($data, $rules);
         self::assertTrue($v->validate());
@@ -131,7 +131,7 @@ class ValitronValidatorTest extends TestCase
             $this->expectException(\Exception::class);
             $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
         }
-        $v->validate(); // @todo PHPUnit bug: https://github.com/sebastianbergmann/phpunit/pull/5822
+        $v->validate();
 
         $v = $this->createFixedValidator($data, $rules);
         self::assertFalse($v->validate());
@@ -152,7 +152,7 @@ class ValitronValidatorTest extends TestCase
             $this->expectException(\Exception::class);
             $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
         }
-        $v->validate(); // @todo PHPUnit bug: https://github.com/sebastianbergmann/phpunit/pull/5822
+        $v->validate();
 
         $v = $this->createFixedValidator($data, $rules);
         self::assertFalse($v->validate());
