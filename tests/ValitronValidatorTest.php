@@ -106,7 +106,7 @@ class ValitronValidatorTest extends TestCase
             $this->throwAsException();
             $this->expectException(\Exception::class);
             $this->expectExceptionMessageMatches('/.*expects parameter 2 to be string, object given.*/'); // Warning: date_parse_from_format() expects parameter 2 to be string, object given
-            // @codeCoverageIgnoreEnd
+        // @codeCoverageIgnoreEnd
         } else {
             // TypeError: date_parse_from_format(): Argument #2 ($datetime) must be of type string, DateTime given
             self::expectException(\TypeError::class);
