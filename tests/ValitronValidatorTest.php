@@ -69,7 +69,7 @@ class ValitronValidatorTest extends TestCase
         $v = $this->createOriginalValidator($data, $rules);
         if (\PHP_VERSION_ID >= 80100) {
             $this->expectException(\Exception::class);
-            $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
+            $this->expectExceptionMessage('strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated');
         }
         $this->executeFxAndThrowErrors(static function () use ($v) {
             $v->validate();
@@ -91,7 +91,7 @@ class ValitronValidatorTest extends TestCase
         $v = $this->createOriginalValidator($data, $rules);
         if (\PHP_VERSION_ID >= 80100) {
             $this->expectException(\Exception::class);
-            $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: date_parse_from_format(): Passing null to parameter #2 ($datetime) of type string is deprecated
+            $this->expectExceptionMessage('date_parse_from_format(): Passing null to parameter #2 ($datetime) of type string is deprecated');
         }
         $this->executeFxAndThrowErrors(static function () use ($v) {
             $v->validate();
@@ -113,7 +113,7 @@ class ValitronValidatorTest extends TestCase
         if (\PHP_VERSION_ID < 80000) {
             // @codeCoverageIgnoreStart
             $this->expectException(\Exception::class);
-            $this->expectExceptionMessageMatches('/.*expects parameter 2 to be string, object given.*/'); // Warning: date_parse_from_format() expects parameter 2 to be string, object given
+            $this->expectExceptionMessage('date_parse_from_format() expects parameter 2 to be string, object given');
         // @codeCoverageIgnoreEnd
         } else {
             // TypeError: date_parse_from_format(): Argument #2 ($datetime) must be of type string, DateTime given
@@ -139,7 +139,7 @@ class ValitronValidatorTest extends TestCase
         $v = $this->createOriginalValidator($data, $rules);
         if (\PHP_VERSION_ID >= 80100) {
             $this->expectException(\Exception::class);
-            $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
+            $this->expectExceptionMessage('strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated');
         }
         $this->executeFxAndThrowErrors(static function () use ($v) {
             $v->validate();
@@ -161,7 +161,7 @@ class ValitronValidatorTest extends TestCase
         $v = $this->createOriginalValidator($data, $rules);
         if (\PHP_VERSION_ID >= 80100) {
             $this->expectException(\Exception::class);
-            $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
+            $this->expectExceptionMessage('strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated');
         }
         $this->executeFxAndThrowErrors(static function () use ($v) {
             $v->validate();
@@ -183,7 +183,7 @@ class ValitronValidatorTest extends TestCase
         $v = $this->createOriginalValidator($data, $rules);
         if (\PHP_VERSION_ID >= 80100) {
             $this->expectException(\Exception::class);
-            $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
+            $this->expectExceptionMessage('strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated');
         }
         $this->executeFxAndThrowErrors(static function () use ($v) {
             $v->validate();
@@ -205,7 +205,7 @@ class ValitronValidatorTest extends TestCase
         $v = $this->createOriginalValidator($data, $rules);
         if (\PHP_VERSION_ID >= 80100) {
             $this->expectException(\Exception::class);
-            $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
+            $this->expectExceptionMessage('strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated');
         }
         $this->executeFxAndThrowErrors(static function () use ($v) {
             $v->validate();
