@@ -60,19 +60,19 @@ class ValitronValidatorTest extends TestCase
         $data = ['d' => null];
         $rules = ['d' => ['required', 'date']];
 
-        $v = $this->createFixedValidator($data, $rules);
-        self::assertFalse($v->validate());
-        self::assertSame(['d'], array_keys($v->errors()));
-        self::assertSame(2, count($v->errors()['d']));
+        $validator = $this->createFixedValidator($data, $rules);
+        self::assertFalse($validator->validate());
+        self::assertSame(['d'], array_keys($validator->errors()));
+        self::assertSame(2, count($validator->errors()['d']));
 
         // this throws depreciation notice starting PHP 8.1
-        $v = $this->createOriginalValidator($data, $rules);
+        $validator = $this->createOriginalValidator($data, $rules);
         if (\PHP_VERSION_ID >= 80100) {
             $this->expectException(\Exception::class);
             $this->expectExceptionMessage('strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated');
         }
-        $this->executeFxAndThrowErrors(static function () use ($v) {
-            $v->validate();
+        $this->executeFxAndThrowErrors(static function () use ($validator) {
+            $validator->validate();
         });
     }
 
@@ -82,19 +82,19 @@ class ValitronValidatorTest extends TestCase
         $data = ['d' => null];
         $rules = ['d' => ['required', ['dateFormat', 'd-m-Y']]];
 
-        $v = $this->createFixedValidator($data, $rules);
-        self::assertFalse($v->validate());
-        self::assertSame(['d'], array_keys($v->errors()));
-        self::assertSame(2, count($v->errors()['d']));
+        $validator = $this->createFixedValidator($data, $rules);
+        self::assertFalse($validator->validate());
+        self::assertSame(['d'], array_keys($validator->errors()));
+        self::assertSame(2, count($validator->errors()['d']));
 
         // this throws depreciation notice starting PHP 8.1
-        $v = $this->createOriginalValidator($data, $rules);
+        $validator = $this->createOriginalValidator($data, $rules);
         if (\PHP_VERSION_ID >= 80100) {
             $this->expectException(\Exception::class);
             $this->expectExceptionMessage('date_parse_from_format(): Passing null to parameter #2 ($datetime) of type string is deprecated');
         }
-        $this->executeFxAndThrowErrors(static function () use ($v) {
-            $v->validate();
+        $this->executeFxAndThrowErrors(static function () use ($validator) {
+            $validator->validate();
         });
     }
 
@@ -104,12 +104,12 @@ class ValitronValidatorTest extends TestCase
         $data = ['d' => new \DateTime()];
         $rules = ['d' => ['required', ['dateFormat', 'd-m-Y']]];
 
-        $v = $this->createFixedValidator($data, $rules);
-        self::assertTrue($v->validate());
-        self::assertSame([], array_keys($v->errors()));
+        $validator = $this->createFixedValidator($data, $rules);
+        self::assertTrue($validator->validate());
+        self::assertSame([], array_keys($validator->errors()));
 
         // this throws warning in PHP 7.4 and TypeError in 8.x
-        $v = $this->createOriginalValidator($data, $rules);
+        $validator = $this->createOriginalValidator($data, $rules);
         if (\PHP_VERSION_ID < 80000) {
             // @codeCoverageIgnoreStart
             $this->expectException(\Exception::class);
@@ -119,8 +119,8 @@ class ValitronValidatorTest extends TestCase
             // TypeError: date_parse_from_format(): Argument #2 ($datetime) must be of type string, DateTime given
             self::expectException(\TypeError::class);
         }
-        $this->executeFxAndThrowErrors(static function () use ($v) {
-            $v->validate();
+        $this->executeFxAndThrowErrors(static function () use ($validator) {
+            $validator->validate();
         });
     }
 
@@ -130,19 +130,19 @@ class ValitronValidatorTest extends TestCase
         $data = ['d' => null];
         $rules = ['d' => ['required', ['dateBefore', '2029-12-31']]];
 
-        $v = $this->createFixedValidator($data, $rules);
-        self::assertFalse($v->validate());
-        self::assertSame(['d'], array_keys($v->errors()));
-        self::assertSame(2, count($v->errors()['d']));
+        $validator = $this->createFixedValidator($data, $rules);
+        self::assertFalse($validator->validate());
+        self::assertSame(['d'], array_keys($validator->errors()));
+        self::assertSame(2, count($validator->errors()['d']));
 
         // this throws depreciation notice starting PHP 8.1
-        $v = $this->createOriginalValidator($data, $rules);
+        $validator = $this->createOriginalValidator($data, $rules);
         if (\PHP_VERSION_ID >= 80100) {
             $this->expectException(\Exception::class);
             $this->expectExceptionMessage('strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated');
         }
-        $this->executeFxAndThrowErrors(static function () use ($v) {
-            $v->validate();
+        $this->executeFxAndThrowErrors(static function () use ($validator) {
+            $validator->validate();
         });
     }
 
@@ -152,19 +152,19 @@ class ValitronValidatorTest extends TestCase
         $data = ['d' => '2024-10-20'];
         $rules = ['d' => ['required', ['dateBefore', null]]];
 
-        $v = $this->createFixedValidator($data, $rules);
-        self::assertFalse($v->validate());
-        self::assertSame(['d'], array_keys($v->errors()));
-        self::assertSame(1, count($v->errors()['d']));
+        $validator = $this->createFixedValidator($data, $rules);
+        self::assertFalse($validator->validate());
+        self::assertSame(['d'], array_keys($validator->errors()));
+        self::assertSame(1, count($validator->errors()['d']));
 
         // this throws depreciation notice starting PHP 8.1
-        $v = $this->createOriginalValidator($data, $rules);
+        $validator = $this->createOriginalValidator($data, $rules);
         if (\PHP_VERSION_ID >= 80100) {
             $this->expectException(\Exception::class);
             $this->expectExceptionMessage('strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated');
         }
-        $this->executeFxAndThrowErrors(static function () use ($v) {
-            $v->validate();
+        $this->executeFxAndThrowErrors(static function () use ($validator) {
+            $validator->validate();
         });
     }
 
@@ -174,19 +174,19 @@ class ValitronValidatorTest extends TestCase
         $data = ['d' => null];
         $rules = ['d' => ['required', ['dateAfter', '2023-12-31']]];
 
-        $v = $this->createFixedValidator($data, $rules);
-        self::assertFalse($v->validate());
-        self::assertSame(['d'], array_keys($v->errors()));
-        self::assertSame(2, count($v->errors()['d']));
+        $validator = $this->createFixedValidator($data, $rules);
+        self::assertFalse($validator->validate());
+        self::assertSame(['d'], array_keys($validator->errors()));
+        self::assertSame(2, count($validator->errors()['d']));
 
         // this throws depreciation notice starting PHP 8.1
-        $v = $this->createOriginalValidator($data, $rules);
+        $validator = $this->createOriginalValidator($data, $rules);
         if (\PHP_VERSION_ID >= 80100) {
             $this->expectException(\Exception::class);
             $this->expectExceptionMessage('strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated');
         }
-        $this->executeFxAndThrowErrors(static function () use ($v) {
-            $v->validate();
+        $this->executeFxAndThrowErrors(static function () use ($validator) {
+            $validator->validate();
         });
     }
 
@@ -196,19 +196,19 @@ class ValitronValidatorTest extends TestCase
         $data = ['d' => '2024-10-20'];
         $rules = ['d' => ['required', ['dateAfter', null]]];
 
-        $v = $this->createFixedValidator($data, $rules);
-        self::assertFalse($v->validate());
-        self::assertSame(['d'], array_keys($v->errors()));
-        self::assertSame(1, count($v->errors()['d']));
+        $validator = $this->createFixedValidator($data, $rules);
+        self::assertFalse($validator->validate());
+        self::assertSame(['d'], array_keys($validator->errors()));
+        self::assertSame(1, count($validator->errors()['d']));
 
         // this throws depreciation notice starting PHP 8.1
-        $v = $this->createOriginalValidator($data, $rules);
+        $validator = $this->createOriginalValidator($data, $rules);
         if (\PHP_VERSION_ID >= 80100) {
             $this->expectException(\Exception::class);
             $this->expectExceptionMessage('strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated');
         }
-        $this->executeFxAndThrowErrors(static function () use ($v) {
-            $v->validate();
+        $this->executeFxAndThrowErrors(static function () use ($validator) {
+            $validator->validate();
         });
     }
 }
