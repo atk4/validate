@@ -24,4 +24,12 @@ class DepTest extends TestCase
         self::expectException(\TypeError::class);
         $a = date_parse_from_format('Y-m-d', $_ENV['foo'] ?? null);
     }
+
+    public function testC(): void
+    {
+        // this throws depreciation notice starting PHP 8.1
+        // Deprecated: date_parse_from_format(): Passing null to parameter #2 ($datetime) of type string is deprecated
+        self::expectException(\TypeError::class);
+        $a = date_parse_from_format('Y-m-d', $_ENV['foo'] ?? new \DateTime());
+    }
 }
