@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Atk4\Validate\Tests;
 
+use Atk4\Data\Exception;
 use Atk4\Data\Model;
 use Atk4\Data\Schema\TestCase;
 use Atk4\Validate\Tests\Model\Dummy;
 use Atk4\Validate\Validator;
+use Atk4\Validate\ValidatorRule;
 
 class BasicTest extends TestCase
 {
@@ -23,6 +25,7 @@ class BasicTest extends TestCase
                     'age' => 22,
                     'type' => 'dog',
                     'tail_length' => 5,
+                    'dob' => '2024-01-01',
                 ],
             ],
         ]);
@@ -62,7 +65,7 @@ class BasicTest extends TestCase
 
         $validator->rule('name', ['required', ['lengthMin', 3]]);
 
-        $err = $model->createEntity()->set('name', 'a')->validate();
+        $err = $model->createEntity()->setNull('name')->validate();
         self::assertSame(['name'], array_keys($err));
     }
 
@@ -97,10 +100,10 @@ class BasicTest extends TestCase
         $model = $this->createModel();
         $validator = $this->createValidator($model);
 
-        // Age should be odd (nepāra skaitlis)
+        // Age should be odd number
         $validator->rule('age', [
             [
-                static function ($field, $value, $params, $data) {
+                static function ($field, $value, $params, $data): bool {
                     return $value % 2 !== 0;
                 },
                 'message' => 'Age should be odd',
@@ -192,7 +195,7 @@ class BasicTest extends TestCase
             'type' => 'dog',
             'age' => 2,
         ])->validate();
-        self::assertSame(['age'], array_keys($err)); // for dogs also age should be at least 3
+        self::assertSame(['age'], array_keys($err)); // for dogs age should be at least 3
 
         $err = $model->createEntity()->setMulti([
             'type' => 'dog',
@@ -229,18 +232,183 @@ class BasicTest extends TestCase
     {
         $model = $this->createModel();
         $validator = $this->createValidator($model);
-        $validator->rule('name', ['required', ['lengthMin', 3]]);
+        $validator->rule('name', ['required', ['lengthMin', 3, 'message' => 'Name to short']]);
 
-        $entity = $model->createEntity();
-        $entity->setMulti([
+        $entity = $model->createEntity()->setMulti([
             'name' => 'abcd',
             'type' => 'dog',
         ]);
 
-        $err = $entity->validate();
-        self::assertSame([], $err);
-
         // will not raise exception for return an empty array in place of null
         $entity->save();
+
+        $entity = $model->createEntity()->setMulti([
+            'name' => 'a',
+            'type' => 'dog',
+        ]);
+
+        // will raise exception because name to short
+        self::expectException(Exception::class);
+        self::expectExceptionMessage('Name to short');
+        $entity->save();
+    }
+
+    public function testExceptionIfRule(): void
+    {
+        $rule = new ValidatorRule('test', ['required']);
+        $rule->setActivateOnSuccess(['type' => 'dog']); // if type=dog, then check if field "test" is set
+
+        self::expectException(Exception::class);
+        self::expectExceptionMessage('Activation condition already set');
+        $rule->setActivateOnFail(['type' => 'dog']); // should not try to set another condition on same rule
+    }
+
+    public function testComplexRuleset(): void
+    {
+        $models = $validators = [];
+        foreach (['old', 'new'] as $i) {
+            $models[$i] = $this->createModel();
+            $validators[$i] = $this->createValidator($models[$i]);
+        }
+
+        // set rules in old-style
+        // everyone should have name set
+        // dogs should have age set and not older than 20 years
+        // others should have name at least 4 chars long
+        $validators['old']->if(['type' => 'dog'], [
+            'name' => ['required'],
+            'age' => ['required', ['max', 20]],
+        ], [
+            'name' => ['required', ['lengthMin', 3, 'message' => 'Name to short']],
+        ]);
+
+        // and set exactly the same rule using new ValidatorRule style
+        // everyone should have name set
+        $rule = new ValidatorRule('name', 'required');
+        $validators['new']->addRule($rule);
+
+        // dogs should have age set
+        $rule = new ValidatorRule('age', 'required');
+        $rule->setActivateOnSuccess(['type' => 'dog']);
+        $validators['new']->addRule($rule);
+
+        // dogs should be not older than 20 years
+        $rule = new ValidatorRule('age', ['max', 20]);
+        $rule->setActivateOnSuccess(['type' => 'dog']);
+        $validators['new']->addRule($rule);
+
+        // others should have name at least 4 chars long
+        $rule = new ValidatorRule('name', ['lengthMin', 3, 'message' => 'Name to short']);
+        $rule->setActivateOnFail(['type' => 'dog']);
+        $validators['new']->addRule($rule);
+
+        // now testing both
+        foreach (['old', 'new'] as $i) {
+            $err = $models[$i]->createEntity()->setMulti([
+                'type' => 'ball',
+            ])->validate();
+            self::assertSame(['name'], array_keys($err)); // name is required for everyone
+
+            $err = $models[$i]->createEntity()->setMulti([
+                'type' => 'dog',
+            ])->validate();
+            self::assertSame(['name', 'age'], array_keys($err)); // name and age is required for dogs
+
+            $err = $models[$i]->createEntity()->setMulti([
+                'type' => 'dog',
+                'name' => 'AB',
+                'age' => 25,
+            ])->validate();
+            self::assertSame(['age'], array_keys($err)); // for dogs age should be no more than 20, but short name is fine
+
+            $err = $models[$i]->createEntity()->setMulti([
+                'type' => 'ball',
+                'name' => 'AB',
+            ])->validate();
+            self::assertSame(['name'], array_keys($err)); // for others name should be long enough
+        }
+    }
+
+    public function testComplexDataTypeInRule(): void
+    {
+        $model = $this->createModel();
+        $validator = $this->createValidator($model);
+
+        $validator->rule('dob', ['required', 'date', ['dateAfter', '2024-01-01']]);
+
+        // date of birth not set
+        $err = $model->createEntity()->validate();
+        self::assertSame(['dob'], array_keys($err));
+
+        // date of birth is to small
+        $err = $model->createEntity()->set('dob', new \DateTime('2023-01-01'))->validate();
+        self::assertSame(['dob'], array_keys($err));
+
+        // date of birth is ok
+        $err = $model->createEntity()->set('dob', new \DateTime('2024-10-01'))->validate();
+        self::assertSame([], array_keys($err));
+    }
+
+    /**
+     * Text complex type as condition.
+     */
+    public function testComplexDataTypeInCondition(): void
+    {
+        $model = $this->createModel();
+        $validator = $this->createValidator($model);
+
+        // if date of birth is this date, then type is required
+        // otherwise name is required
+        $validator->if(['dob' => new \DateTime('2024-01-01')], [
+            'type' => ['required'],
+        ], [
+            'name' => ['required'],
+        ]);
+
+        $err = $model->createEntity()->setMulti([
+            'dob' => new \DateTime('2023-10-10'),
+        ])->validate();
+        self::assertSame(['name'], array_keys($err));
+
+        $err = $model->createEntity()->setMulti([
+            'dob' => new \DateTime('2024-01-01'),
+        ])->validate();
+        self::assertSame(['type'], array_keys($err));
+    }
+
+    /**
+     * Test DateTime data typefor coverage.
+     */
+    public function testDateTimeForCoverage(): void
+    {
+        // test as DateTime field
+        $model = $this->createModel();
+        $validator = $this->createValidator($model);
+        $validator->rule('dob', ['required', ['dateFormat', 'd-m-Y'], ['dateBefore', '20-10-2024']]);
+
+        // date of birth is to big
+        $err = $model->createEntity()->set('dob', new \DateTime('2025-10-20'))->validate();
+        self::assertSame(['dob'], array_keys($err));
+
+        // date of birth is ok
+        $err = $model->createEntity()->set('dob', new \DateTime('2024-05-20'))->validate();
+        self::assertSame([], array_keys($err));
+
+        // now test as simple text field
+        $model = $this->createModel();
+        $validator = $this->createValidator($model);
+        $validator->rule('name', ['required', ['dateFormat', 'd-m-Y'], ['dateBefore', '20-10-2024']]);
+
+        // date not set
+        $err = $model->createEntity()->validate();
+        self::assertSame(['name'], array_keys($err));
+
+        // date of birth is to big
+        $err = $model->createEntity()->set('name', '20-10-2025')->validate();
+        self::assertSame(['name'], array_keys($err));
+
+        // date of birth is ok
+        $err = $model->createEntity()->set('name', '20-05-2024')->validate();
+        self::assertSame([], array_keys($err));
     }
 }
