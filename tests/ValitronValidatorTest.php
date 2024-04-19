@@ -41,6 +41,17 @@ class ValitronValidatorTest extends TestCase
         return $v;
     }
 
+    private static function catchWarningsAsExceptions(): void
+    {
+        set_error_handler(
+            static function ( $errno, $errstr ) {
+                restore_error_handler();
+                throw new \Exception( $errstr, $errno );
+            },
+            E_ALL
+        );
+    }
+
     public function testDate(): void
     {
         $data = ['d' => null];
@@ -49,13 +60,7 @@ class ValitronValidatorTest extends TestCase
         $v = $this->createOriginalValidator($data, $rules);
 
         // this throws depreciation notice starting PHP 8.1
-        set_error_handler(
-            static function ( $errno, $errstr ) {
-                restore_error_handler();
-                throw new \Exception( $errstr, $errno );
-            },
-            E_ALL
-        );
+        self::catchWarningsAsExceptions();
         $this->expectException(\Exception::class);
         $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
         $v->validate(); // @todo PHPUnit bug: https://github.com/sebastianbergmann/phpunit/pull/5822
