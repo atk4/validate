@@ -17,10 +17,10 @@ class ValitronValidatorTest extends TestCase
      */
     protected function createOriginalValidator(array $data, array $rules): OriginalValidator
     {
-        $v = new OriginalValidator($data);
-        $v->mapFieldsRules($rules);
+        $validator = new OriginalValidator($data);
+        $validator->mapFieldsRules($rules);
 
-        return $v;
+        return $validator;
     }
 
     /**
@@ -29,22 +29,26 @@ class ValitronValidatorTest extends TestCase
      */
     protected function createFixedValidator(array $data, array $rules): FixedValidator
     {
-        $v = new FixedValidator($data);
-        $v->mapFieldsRules($rules);
+        $validator = new FixedValidator($data);
+        $validator->mapFieldsRules($rules);
 
-        return $v;
+        return $validator;
     }
 
-    private function throwAsException(int $error_levels = \E_ALL): void
+    private function executeFxAndThrowErrors(\Closure $fx, int $errorLevels = \E_ALL)
     {
         set_error_handler(
             static function ($errno, $errstr) {
-                restore_error_handler();
-
                 throw new \Exception($errstr, $errno);
             },
-            $error_levels
+            $errorLevels
         );
+
+        try {
+            return $fx();
+        } finally {
+            restore_error_handler();
+        }
     }
 
     public function testDate(): void
@@ -60,12 +64,13 @@ class ValitronValidatorTest extends TestCase
 
         // this throws depreciation notice starting PHP 8.1
         $v = $this->createOriginalValidator($data, $rules);
-        if (version_compare(\PHP_VERSION, '8.1.0', '>=')) {
-            $this->throwAsException();
+        if (\PHP_VERSION_ID >= 80100) {
             $this->expectException(\Exception::class);
             $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
         }
-        $v->validate();
+        $this->executeFxAndThrowErrors(function() use ($v){
+            $v->validate();
+        });
     }
 
     public function testDateFormat(): void
@@ -81,12 +86,13 @@ class ValitronValidatorTest extends TestCase
 
         // this throws depreciation notice starting PHP 8.1
         $v = $this->createOriginalValidator($data, $rules);
-        if (version_compare(\PHP_VERSION, '8.1.0', '>=')) {
-            $this->throwAsException();
+        if (\PHP_VERSION_ID >= 80100) {
             $this->expectException(\Exception::class);
             $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: date_parse_from_format(): Passing null to parameter #2 ($datetime) of type string is deprecated
         }
-        $v->validate();
+        $this->executeFxAndThrowErrors(function() use ($v){
+            $v->validate();
+        });
     }
 
     public function testDateFormat2(): void
@@ -101,9 +107,8 @@ class ValitronValidatorTest extends TestCase
 
         // this throws warning in PHP 7.4 and TypeError in 8.x
         $v = $this->createOriginalValidator($data, $rules);
-        if (version_compare(\PHP_VERSION, '8.0.0', '<')) {
+        if (\PHP_VERSION_ID < 80000) {
             // @codeCoverageIgnoreStart
-            $this->throwAsException();
             $this->expectException(\Exception::class);
             $this->expectExceptionMessageMatches('/.*expects parameter 2 to be string, object given.*/'); // Warning: date_parse_from_format() expects parameter 2 to be string, object given
         // @codeCoverageIgnoreEnd
@@ -111,7 +116,9 @@ class ValitronValidatorTest extends TestCase
             // TypeError: date_parse_from_format(): Argument #2 ($datetime) must be of type string, DateTime given
             self::expectException(\TypeError::class);
         }
-        $v->validate();
+        $this->executeFxAndThrowErrors(function() use ($v){
+            $v->validate();
+        });
     }
 
     public function testDateBefore(): void
@@ -127,12 +134,13 @@ class ValitronValidatorTest extends TestCase
 
         // this throws depreciation notice starting PHP 8.1
         $v = $this->createOriginalValidator($data, $rules);
-        if (version_compare(\PHP_VERSION, '8.1.0', '>=')) {
-            $this->throwAsException();
+        if (\PHP_VERSION_ID >= 80100) {
             $this->expectException(\Exception::class);
             $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
         }
-        $v->validate();
+        $this->executeFxAndThrowErrors(function() use ($v){
+            $v->validate();
+        });
     }
 
     public function testDateBefore2(): void
@@ -148,12 +156,13 @@ class ValitronValidatorTest extends TestCase
 
         // this throws depreciation notice starting PHP 8.1
         $v = $this->createOriginalValidator($data, $rules);
-        if (version_compare(\PHP_VERSION, '8.1.0', '>=')) {
-            $this->throwAsException();
+        if (\PHP_VERSION_ID >= 80100) {
             $this->expectException(\Exception::class);
             $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
         }
-        $v->validate();
+        $this->executeFxAndThrowErrors(function() use ($v){
+            $v->validate();
+        });
     }
 
     public function testDateAfter(): void
@@ -169,12 +178,13 @@ class ValitronValidatorTest extends TestCase
 
         // this throws depreciation notice starting PHP 8.1
         $v = $this->createOriginalValidator($data, $rules);
-        if (version_compare(\PHP_VERSION, '8.1.0', '>=')) {
-            $this->throwAsException();
+        if (\PHP_VERSION_ID >= 80100) {
             $this->expectException(\Exception::class);
             $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
         }
-        $v->validate();
+        $this->executeFxAndThrowErrors(function() use ($v){
+            $v->validate();
+        });
     }
 
     public function testDateAfter2(): void
@@ -190,11 +200,12 @@ class ValitronValidatorTest extends TestCase
 
         // this throws depreciation notice starting PHP 8.1
         $v = $this->createOriginalValidator($data, $rules);
-        if (version_compare(\PHP_VERSION, '8.1.0', '>=')) {
-            $this->throwAsException();
+        if (\PHP_VERSION_ID >= 80100) {
             $this->expectException(\Exception::class);
             $this->expectExceptionMessageMatches('/.*is deprecated/'); // Deprecated: strtotime(): Passing null to parameter #1 ($datetime) of type string is deprecated
         }
-        $v->validate();
+        $this->executeFxAndThrowErrors(function() use ($v){
+            $v->validate();
+        });
     }
 }
