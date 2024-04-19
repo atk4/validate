@@ -102,9 +102,11 @@ class ValitronValidatorTest extends TestCase
         // this throws warning in PHP 7.4 and TypeError in 8.x
         $v = $this->createOriginalValidator($data, $rules);
         if (version_compare(\PHP_VERSION, '8.0.0', '<')) {
+            // @codeCoverageIgnoreStart
             $this->throwAsException();
             $this->expectException(\Exception::class);
             $this->expectExceptionMessageMatches('/.*expects parameter 2 to be string, object given.*/'); // Warning: date_parse_from_format() expects parameter 2 to be string, object given
+            // @codeCoverageIgnoreEnd
         } else {
             // TypeError: date_parse_from_format(): Argument #2 ($datetime) must be of type string, DateTime given
             self::expectException(\TypeError::class);
